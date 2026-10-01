@@ -1,0 +1,215 @@
+'use client'
+
+import { useState, useEffect, useCallback, useRef } from 'react'
+import Link from 'next/link'
+
+const DURATION = 6000
+
+const slides = [
+  {
+    id: 1,
+    bg: 'radial-gradient(ellipse at 75% 50%, #1C1408 0%, #0A0A0A 65%)',
+    eyebrow: 'New Collection',
+    lines: ['Wear What', 'Speaks', 'for You.'],
+    highlight: 1,
+    sub: 'Curated jewellery & accessories, sourced for the bold and the elegant. Fast delivery across Nigeria.',
+    cta: { label: 'Shop the Collection', href: '/shop' },
+    cta2: { label: 'View Jewels', href: '/jewels' },
+    accentX: '68%', accentY: '40%',
+  },
+  {
+    id: 2,
+    bg: 'radial-gradient(ellipse at 25% 55%, #0C0814 0%, #080808 65%)',
+    eyebrow: 'Jewels Collection',
+    lines: ['Shine', 'Without', 'Compromise.'],
+    highlight: 0,
+    sub: 'From rings to anklets — every piece handpicked for the discerning woman.',
+    cta: { label: 'Explore Jewels', href: '/jewels' },
+    cta2: null,
+    accentX: '25%', accentY: '60%',
+  },
+  {
+    id: 3,
+    bg: 'radial-gradient(ellipse at 55% 25%, #10080C 0%, #090909 65%)',
+    eyebrow: 'Premium Accessories',
+    lines: ['Elevate', 'Every', 'Look.'],
+    highlight: 2,
+    sub: 'Wristwatches, sunglasses and belts — premium accessories for every style.',
+    cta: { label: 'Shop Accessories', href: '/accessories' },
+    cta2: null,
+    accentX: '55%', accentY: '20%',
+  },
+]
+
+export default function HeroSlider() {
+  const [active, setActive] = useState(0)
+  const [prev, setPrev] = useState<number | null>(null)
+  const [animKey, setAnimKey] = useState(0)
+  const [progress, setProgress] = useState(0)
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const startRef = useRef<number>(Date.now())
+
+  const goTo = useCallback((idx: number) => {
+    setPrev(active)
+    setActive(idx)
+    setAnimKey(k => k + 1)
+    setProgress(0)
+    startRef.current = Date.now()
+  }, [active])
+
+  const next = useCallback(() => goTo((active + 1) % slides.length), [active, goTo])
+
+  // Auto-advance
+  useEffect(() => {
+    timerRef.current = setInterval(next, DURATION)
+    return () => { if (timerRef.current) clearInterval(timerRef.current) }
+  }, [next])
+
+  // Progress bar
+  useEffect(() => {
+    const raf = requestAnimationFrame(function tick() {
+      const elapsed = Date.now() - startRef.current
+      setProgress(Math.min(elapsed / DURATION, 1))
+      requestAnimationFrame(tick)
+    })
+    return () => cancelAnimationFrame(raf)
+  }, [animKey])
+
+  const slide = slides[active]
+
+  return (
+    <section className="relative w-full overflow-hidden" style={{ minHeight: '100vh' }}>
+      {/* Slides */}
+      {slides.map((s, i) => (
+        <div
+          key={s.id}
+          className="absolute inset-0 transition-opacity duration-1000"
+          style={{
+            background: s.bg,
+            opacity: i === active ? 1 : 0,
+            zIndex: i === active ? 2 : 1,
+          }}
+        >
+          {/* Diagonal gold texture */}
+          <div className="absolute inset-0" style={{
+            opacity: 0.035,
+            backgroundImage: 'repeating-linear-gradient(-45deg, #B8882C 0px, #B8882C 1px, transparent 1px, transparent 55px)',
+          }} />
+          {/* Gold orb glow */}
+          <div className="absolute pointer-events-none" style={{
+            left: s.accentX, top: s.accentY,
+            width: '420px', height: '420px',
+            transform: 'translate(-50%, -50%)',
+            background: 'radial-gradient(circle, rgba(184,136,44,0.18) 0%, transparent 70%)',
+            borderRadius: '50%',
+          }} />
+          {/* Gradient overlay */}
+          <div className="absolute inset-0" style={{
+            background: 'linear-gradient(90deg, rgba(8,8,8,0.92) 0%, rgba(8,8,8,0.6) 55%, rgba(8,8,8,0.1) 100%)',
+          }} />
+        </div>
+      ))}
+
+      {/* Faded JH watermark */}
+      <div className="absolute right-0 top-0 bottom-0 pointer-events-none select-none" style={{ width: '50%', opacity: 0.055, zIndex: 3 }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/brand/logo.jpg" alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', objectPosition: 'right center', filter: 'invert(1)' }} />
+      </div>
+
+      {/* Content */}
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-5 sm:px-8 flex items-center" style={{ minHeight: '100vh', paddingTop: '6rem', paddingBottom: '7rem' }}>
+        <div style={{ maxWidth: '580px' }}>
+          {/* Eyebrow */}
+          <div
+            key={`eyebrow-${animKey}`}
+            style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.75rem', opacity: 0, animation: 'slideUp 0.5s ease 0.1s forwards' }}
+          >
+            <span style={{ display: 'block', width: '36px', height: '1px', backgroundColor: '#B8882C', flexShrink: 0 }} />
+            <span style={{ fontSize: '0.68rem', fontWeight: 600, letterSpacing: '0.28em', textTransform: 'uppercase', color: '#B8882C' }}>
+              {slide.eyebrow}
+            </span>
+          </div>
+
+          {/* Headline lines */}
+          <h1 style={{ fontSize: 'clamp(3rem, 7vw, 6rem)', lineHeight: 1.05, letterSpacing: '-0.02em', color: '#FFFFFF', margin: 0 }}>
+            {slide.lines.map((line, li) => (
+              <div
+                key={`line-${animKey}-${li}`}
+                className="font-display font-bold"
+                style={{
+                  opacity: 0,
+                  display: 'block',
+                  animation: `slideUp 0.6s ease ${0.15 + li * 0.12}s forwards`,
+                  color: li === slide.highlight ? '#B8882C' : '#FFFFFF',
+                  fontStyle: li === slide.highlight ? 'italic' : 'normal',
+                }}
+              >
+                {line}
+              </div>
+            ))}
+          </h1>
+
+          {/* Sub */}
+          <p
+            key={`sub-${animKey}`}
+            style={{ marginTop: '1.5rem', color: 'rgba(255,255,255,0.58)', fontSize: '1rem', lineHeight: 1.75, maxWidth: '400px', opacity: 0, animation: 'slideUp 0.6s ease 0.52s forwards' }}
+          >
+            {slide.sub}
+          </p>
+
+          {/* CTAs */}
+          <div
+            key={`cta-${animKey}`}
+            style={{ display: 'flex', flexWrap: 'wrap', gap: '0.875rem', marginTop: '2.25rem', opacity: 0, animation: 'slideUp 0.6s ease 0.65s forwards' }}
+          >
+            <Link href={slide.cta.href} className="hero-btn-primary" style={{ display: 'inline-flex', alignItems: 'center', padding: '0.875rem 1.75rem', fontWeight: 700, fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase', transition: 'background-color 0.2s' }}>
+              {slide.cta.label}
+            </Link>
+            {slide.cta2 && (
+              <Link href={slide.cta2.href} className="hero-btn-outline" style={{ display: 'inline-flex', alignItems: 'center', padding: '0.875rem 1.75rem', fontWeight: 600, fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+                {slide.cta2.label}
+              </Link>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Slide counter + dots */}
+      <div className="absolute bottom-10 left-5 sm:left-8 z-10 flex items-center gap-5">
+        <span style={{ fontFamily: 'monospace', fontSize: '0.7rem', color: 'rgba(255,255,255,0.35)', letterSpacing: '0.1em' }}>
+          {String(active + 1).padStart(2, '0')} / {String(slides.length).padStart(2, '0')}
+        </span>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          {slides.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => goTo(i)}
+              style={{
+                width: i === active ? '28px' : '8px',
+                height: '3px',
+                borderRadius: '2px',
+                border: 'none',
+                padding: 0,
+                cursor: 'pointer',
+                backgroundColor: i === active ? '#B8882C' : 'rgba(255,255,255,0.3)',
+                transition: 'width 0.4s ease, background-color 0.3s',
+              }}
+              aria-label={`Go to slide ${i + 1}`}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Progress bar */}
+      <div className="absolute bottom-0 left-0 right-0 z-10" style={{ height: '2px', backgroundColor: 'rgba(255,255,255,0.08)' }}>
+        <div style={{ height: '100%', backgroundColor: '#B8882C', width: `${progress * 100}%`, transition: 'width 0.1s linear' }} />
+      </div>
+
+      {/* Scroll cue */}
+      <div className="absolute right-6 bottom-10 z-10 flex flex-col items-center gap-2 hidden md:flex" style={{ color: 'rgba(255,255,255,0.25)' }}>
+        <span style={{ fontSize: '9px', letterSpacing: '0.2em', textTransform: 'uppercase', writingMode: 'vertical-rl' }}>Scroll</span>
+        <span style={{ display: 'block', width: '1px', height: '48px', backgroundColor: 'rgba(255,255,255,0.15)' }} />
+      </div>
+    </section>
+  )
+}
