@@ -1,14 +1,20 @@
 import Link from 'next/link'
 import HeroSlider from '@/components/hero/HeroSlider'
 import { Reveal } from '@/components/ui/Reveal'
-import { getSliderConfig, getAllSlidersConfig } from '@/lib/supabase/storefront'
+import { getSliderConfig, getAllSlidersConfig, getProducts } from '@/lib/supabase/storefront'
+import { formatPrice } from '@/lib/utils'
+import { ProductCardActions } from '@/components/product/ProductCardActions'
+
+export const revalidate = 60 // Revalidate every minute so it updates periodically
 
 export default async function HomePage() {
   const whatsapp = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '2349133115713'
-  const [sliderConfig, allSliders] = await Promise.all([
+  const [sliderConfig, allSliders, allProducts] = await Promise.all([
     getSliderConfig('/'),
-    getAllSlidersConfig()
+    getAllSlidersConfig(),
+    getProducts()
   ])
+  const newArrivals = allProducts.slice(0, 4)
 
   // Helper to extract the first media from a specific slider config
   const getCatMedia = (slug: string, fallback: string) => {
@@ -137,28 +143,49 @@ export default async function HomePage() {
           </div>
         </Reveal>
         
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {[1, 2, 3, 4].map(i => (
-            <Reveal key={i} delay={i * 0.1}>
-              <div className="arrival-card">
-                <div style={{ width: '100%', aspectRatio: '3/4', backgroundColor: '#E8E5DF', borderRadius: '4px', border: '1px solid rgba(13,13,13,0.05)' }} />
-                <div style={{ marginTop: '1rem' }}>
-                  <div style={{ width: '70%', height: '13px', backgroundColor: '#E8E5DF', borderRadius: '2px', marginBottom: '8px' }} />
-                  <div style={{ width: '40%', height: '13px', backgroundColor: 'rgba(184,136,44,0.2)', borderRadius: '2px' }} />
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+          {newArrivals.map((product: any, i: number) => (
+            <Reveal key={product.id} delay={i * 0.1}>
+              <Link 
+                href={`/shop/${product.slug}`}
+                style={{ display: 'block' }}
+                className="group arrival-card"
+              >
+                <div style={{ position: 'relative', width: '100%', aspectRatio: '3/4', backgroundColor: '#E8E5DF', overflow: 'hidden', borderRadius: '4px', border: '1px solid rgba(13,13,13,0.05)' }}>
+                  <ProductCardActions product={product} />
+                  {(() => {
+                    const img = product.product_images?.find((x: any) => x.is_primary) || product.product_images?.[0]
+                    return img ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={img.url}
+                        alt={product.name}
+                        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s ease' }}
+                        className="group-hover:scale-105"
+                      />
+                    ) : (
+                      <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(13,13,13,0.2)', fontSize: '0.8rem' }}>
+                        No Image
+                      </div>
+                    )
+                  })()}
                 </div>
-              </div>
+                <div style={{ marginTop: '1rem' }}>
+                  <p style={{ fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#B8882C', marginBottom: '0.25rem' }}>
+                    {product.categories?.name}
+                  </p>
+                  <h3 className="font-display font-bold" style={{ fontSize: '1.1rem', color: '#0D0D0D', marginBottom: '0.25rem' }}>
+                    {product.name}
+                  </h3>
+                  <p style={{ fontSize: '0.85rem', color: '#7A7069', fontWeight: 500 }}>
+                    {formatPrice(product.price_kobo)}
+                  </p>
+                </div>
+              </Link>
             </Reveal>
           ))}
         </div>
         
-        <Reveal delay={0.2}>
-          <p style={{ textAlign: 'center', marginTop: '4rem', fontSize: '0.875rem', color: '#7A7069', fontWeight: 500 }}>
-            Products loading soon —{' '}
-            <a href={`https://wa.me/${whatsapp}`} style={{ color: '#B8882C', textDecoration: 'underline', fontWeight: 600 }}>
-              message us on WhatsApp
-            </a>.
-          </p>
-        </Reveal>
       </section>
     </div>
   )
