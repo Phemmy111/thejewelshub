@@ -87,9 +87,9 @@ export default async function HomePage() {
       </section>
 
       {/* ── SHOP BY CATEGORY ─────────────────────────────────────────────── */}
-      <section className="max-w-7xl mx-auto px-5 sm:px-8 py-24">
+      <section className="max-w-7xl mx-auto px-5 sm:px-8 py-12 lg:py-16">
         <Reveal>
-          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: '3rem' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: '2rem' }}>
             <div>
               <p style={{ fontSize: '0.7rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.22em', color: '#B8882C', marginBottom: '0.75rem' }}>Explore</p>
               <h2 className="font-display font-bold" style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.8rem)', color: '#0D0D0D', lineHeight: 1.15 }}>Shop by Category</h2>
@@ -118,24 +118,24 @@ export default async function HomePage() {
 
       {/* ── BRAND STATEMENT ──────────────────────────────────────────────── */}
       {/* Changed to uniform ash with dark text and gold accents */}
-      <section style={{ backgroundColor: '#F5F4F0', position: 'relative', overflow: 'hidden', padding: '6rem 1.25rem', borderTop: '1px solid rgba(13,13,13,0.06)' }}>
+      <section style={{ backgroundColor: '#F5F4F0', position: 'relative', overflow: 'hidden', padding: '4rem 1.25rem', borderTop: '1px solid rgba(13,13,13,0.06)' }}>
         <div className="absolute inset-0" style={{ opacity: 0.05, backgroundImage: 'repeating-linear-gradient(45deg, #B8882C 0px, #B8882C 1px, transparent 1px, transparent 80px)' }} />
         <Reveal>
           <div className="relative z-10 max-w-4xl mx-auto text-center">
-            <div style={{ width: '48px', height: '2px', backgroundColor: '#B8882C', margin: '0 auto 2rem' }} />
+            <div style={{ width: '48px', height: '2px', backgroundColor: '#B8882C', margin: '0 auto 1.5rem' }} />
             <blockquote className="font-display italic" style={{ fontSize: 'clamp(1.6rem, 4vw, 3rem)', color: '#0D0D0D', lineHeight: 1.3, letterSpacing: '-0.01em' }}>
               &ldquo;Every piece tells a story.<br />
               <span style={{ color: '#B8882C' }}>What will yours say?</span>&rdquo;
             </blockquote>
-            <div style={{ width: '48px', height: '2px', backgroundColor: '#B8882C', margin: '2rem auto 0' }} />
+            <div style={{ width: '48px', height: '2px', backgroundColor: '#B8882C', margin: '1.5rem auto 0' }} />
           </div>
         </Reveal>
       </section>
 
-      {/* ── NEW ARRIVALS PLACEHOLDER ─────────────────────────────────────── */}
-      <section className="max-w-7xl mx-auto px-5 sm:px-8 py-24" style={{ borderTop: '1px solid rgba(13,13,13,0.06)' }}>
+      {/* ── NEW ARRIVALS ─────────────────────────────────────── */}
+      <section className="max-w-7xl mx-auto px-5 sm:px-8 py-12 lg:py-16" style={{ borderTop: '1px solid rgba(13,13,13,0.06)' }}>
         <Reveal>
-          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: '3rem' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: '2rem' }}>
             <div>
               <p style={{ fontSize: '0.7rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.22em', color: '#B8882C', marginBottom: '0.75rem' }}>Just In</p>
               <h2 className="font-display font-bold" style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.8rem)', color: '#0D0D0D', lineHeight: 1.15 }}>New Arrivals</h2>
