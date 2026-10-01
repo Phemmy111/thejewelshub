@@ -35,6 +35,11 @@ export default function ProductManagerClient({ initialProducts, categories }: { 
   const [sizes, setSizes] = useState<string[]>([])
   const [sizeInput, setSizeInput] = useState('')
 
+  // Colours
+  const [colors, setColors] = useState<{ name: string; hex: string }[]>([])
+  const [colorHex, setColorHex] = useState('#B8882C')
+  const [colorName, setColorName] = useState('')
+
   // Reference Media
   const [refMediaFiles, setRefMediaFiles] = useState<File[]>([])
   const [existingRefMedia, setExistingRefMedia] = useState<any[]>([])
@@ -55,6 +60,9 @@ export default function ProductManagerClient({ initialProducts, categories }: { 
     setExistingImages([])
     setSizes([])
     setSizeInput('')
+    setColors([])
+    setColorHex('#B8882C')
+    setColorName('')
     setRefMediaFiles([])
     setExistingRefMedia([])
   }
@@ -75,6 +83,9 @@ export default function ProductManagerClient({ initialProducts, categories }: { 
     setSelectedFiles([])
     setSizes(prod.sizes || [])
     setSizeInput('')
+    setColors(prod.colors || [])
+    setColorHex('#B8882C')
+    setColorName('')
     setExistingRefMedia(prod.reference_media || [])
     setRefMediaFiles([])
     setIsModalOpen(true)
@@ -137,6 +148,7 @@ export default function ProductManagerClient({ initialProducts, categories }: { 
         stock_quantity: parseInt(stock),
         is_active: isActive,
         sizes: sizes,
+        colors: colors,
         reference_media: [
           ...existingRefMedia.map(m => ({ url: m.url, isVideo: m.isVideo, caption: m.caption || '' })),
           ...newRefMedia
@@ -387,6 +399,133 @@ export default function ProductManagerClient({ initialProducts, categories }: { 
                         }}
                         className="px-3 py-2 rounded text-sm font-semibold text-white"
                         style={{ backgroundColor: 'rgba(184,136,44,0.4)' }}
+                      >
+                        + Add
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* ── Colours ─────────────────────────────────────────── */}
+                  <div>
+                    <label className="block text-xs font-semibold text-white/60 uppercase tracking-wider mb-2">Available Colours</label>
+
+                    {/* Chosen colour chips */}
+                    <div className="flex gap-2 flex-wrap mb-3">
+                      {colors.map((c, i) => (
+                        <span
+                          key={i}
+                          className="flex items-center gap-1.5 pl-1 pr-2.5 py-1 rounded-full text-xs font-semibold"
+                          style={{ backgroundColor: 'rgba(255,255,255,0.08)', color: '#fff', border: '1px solid rgba(255,255,255,0.12)' }}
+                        >
+                          <span
+                            style={{
+                              display: 'inline-block',
+                              width: '14px',
+                              height: '14px',
+                              borderRadius: '50%',
+                              backgroundColor: c.hex,
+                              border: '1px solid rgba(255,255,255,0.25)',
+                              flexShrink: 0,
+                            }}
+                          />
+                          {c.name}
+                          <button
+                            type="button"
+                            onClick={() => setColors(prev => prev.filter((_, idx) => idx !== i))}
+                            style={{ lineHeight: 1, marginLeft: '2px', opacity: 0.6 }}
+                          >×</button>
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* Preset colour swatches */}
+                    <div className="flex gap-2 flex-wrap mb-3">
+                      {[
+                        { name: 'Gold',         hex: '#B8882C' },
+                        { name: 'Silver',       hex: '#C0C0C0' },
+                        { name: 'Rose Gold',    hex: '#C97B63' },
+                        { name: 'Black',        hex: '#1A1A1A' },
+                        { name: 'White',        hex: '#F5F4F0' },
+                        { name: 'Red',          hex: '#DC2626' },
+                        { name: 'Blue',         hex: '#2563EB' },
+                        { name: 'Green',        hex: '#16A34A' },
+                        { name: 'Purple',       hex: '#7C3AED' },
+                        { name: 'Pink',         hex: '#DB2777' },
+                        { name: 'Brown',        hex: '#92400E' },
+                        { name: 'Nude',         hex: '#C4A882' },
+                      ].map(preset => {
+                        const already = colors.some(c => c.hex === preset.hex)
+                        return (
+                          <button
+                            key={preset.hex}
+                            type="button"
+                            title={preset.name}
+                            onClick={() => {
+                              if (!already) setColors(prev => [...prev, preset])
+                            }}
+                            style={{
+                              width: '28px',
+                              height: '28px',
+                              borderRadius: '50%',
+                              backgroundColor: preset.hex,
+                              border: already ? '2px solid #B8882C' : '2px solid rgba(255,255,255,0.15)',
+                              cursor: already ? 'default' : 'pointer',
+                              outline: 'none',
+                              flexShrink: 0,
+                              boxShadow: already ? '0 0 0 2px rgba(184,136,44,0.4)' : 'none',
+                              transition: 'border-color 0.2s, box-shadow 0.2s',
+                            }}
+                          />
+                        )
+                      })}
+                    </div>
+
+                    {/* Custom colour row */}
+                    <div className="flex gap-2 items-center">
+                      <input
+                        type="color"
+                        value={colorHex}
+                        onChange={e => setColorHex(e.target.value)}
+                        style={{
+                          width: '38px',
+                          height: '38px',
+                          borderRadius: '6px',
+                          border: '1px solid rgba(255,255,255,0.12)',
+                          padding: '2px',
+                          backgroundColor: 'rgba(0,0,0,0.4)',
+                          cursor: 'pointer',
+                          flexShrink: 0,
+                        }}
+                        title="Pick custom colour"
+                      />
+                      <input
+                        type="text"
+                        value={colorName}
+                        onChange={e => setColorName(e.target.value)}
+                        onKeyDown={e => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault()
+                            const n = colorName.trim()
+                            if (n && !colors.some(c => c.hex === colorHex)) {
+                              setColors(prev => [...prev, { name: n, hex: colorHex }])
+                              setColorName('')
+                            }
+                          }
+                        }}
+                        placeholder="Colour name (e.g. Champagne)"
+                        className="flex-1 bg-black/40 border border-white/10 rounded-md py-2 px-3 text-sm text-white focus:outline-none"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const n = colorName.trim()
+                          if (n && !colors.some(c => c.hex === colorHex)) {
+                            setColors(prev => [...prev, { name: n, hex: colorHex }])
+                            setColorName('')
+                          }
+                        }}
+                        className="px-3 py-2 rounded text-sm font-semibold text-white"
+                        style={{ backgroundColor: 'rgba(184,136,44,0.4)', flexShrink: 0 }}
                       >
                         + Add
                       </button>

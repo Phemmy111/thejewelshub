@@ -122,6 +122,7 @@ export async function saveProduct(productData: any, images: { url: string, is_pr
         stock_quantity: productData.stock_quantity,
         is_active: productData.is_active,
         sizes: productData.sizes || [],
+        colors: productData.colors || [],
         reference_media: productData.reference_media || [],
         updated_at: new Date().toISOString()
       })
