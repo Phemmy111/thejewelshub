@@ -172,9 +172,9 @@ export default function CheckoutClient() {
                   style={{ resize: 'vertical' }}
                 />
               </div>
-              <p style={{ fontSize: '0.72rem', color: '#7A7069', marginTop: '10px' }}>
-                Delivery fee will be communicated after order confirmation.
-              </p>
+              <div style={{ fontSize: '0.75rem', color: '#7A7069', marginTop: '14px', padding: '12px', backgroundColor: '#F9F8F6', borderRadius: '4px', border: '1px solid #E8E5DF' }}>
+                <strong>Delivery Notice:</strong> It may take 2 to 3 working days for your products to arrive based on your location. A final delivery fee will be communicated after order confirmation.
+              </div>
             </section>
 
             {/* Error */}

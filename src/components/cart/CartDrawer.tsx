@@ -154,8 +154,8 @@ export function CartDrawer() {
               <span style={{ fontWeight: 600, fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#7A7069' }}>Subtotal</span>
               <span style={{ fontWeight: 800, fontSize: '1.2rem', color: '#0D0D0D' }}>{formatPrice(subtotal)}</span>
             </div>
-            <p style={{ fontSize: '0.7rem', color: '#7A7069', textAlign: 'center', margin: '0 0 14px' }}>
-              Delivery fee confirmed after order.
+            <p style={{ fontSize: '0.7rem', color: '#7A7069', textAlign: 'center', margin: '0 0 14px', lineHeight: 1.5 }}>
+              Please note: It may take <strong>2 to 3 working days</strong> for your products to arrive based on your location.
             </p>
             <Link
               href="/checkout"

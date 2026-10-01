@@ -1,6 +1,10 @@
 import { redirect } from 'next/navigation'
 import { auth, currentUser } from '@clerk/nextjs/server'
 import Link from 'next/link'
+import { createServerClient } from '@supabase/ssr'
+import { cookies } from 'next/headers'
+
+const SUPER_ADMINS = ['thejewellershub@gmail.com', 'femiadeleke2020@gmail.com']
 
 export default async function AdminLayout({
   children,
@@ -10,14 +14,35 @@ export default async function AdminLayout({
   const { userId } = await auth()
 
   if (!userId) {
-    redirect('/sign-in')
+    redirect('/sign-in?redirect_url=/admin')
   }
 
   const user = await currentUser()
-  const email = user?.emailAddresses?.[0]?.emailAddress
+  const email = user?.emailAddresses?.[0]?.emailAddress?.toLowerCase()
 
-  // TODO: Phase 3 — check email against admins table in Supabase
-  // For now, allow any signed-in user to see the admin shell (gate added in Phase 3)
+  if (!email) redirect('/')
+
+  let isAuthorized = SUPER_ADMINS.includes(email)
+
+  if (!isAuthorized) {
+    const cookieStore = await cookies()
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+      {
+        cookies: {
+          getAll() { return cookieStore.getAll() },
+          setAll() {}
+        }
+      }
+    )
+    const { data } = await supabase.from('admins').select('email').eq('email', email).single()
+    if (data) isAuthorized = true
+  }
+
+  if (!isAuthorized) {
+    redirect('/') // Kick customers out to the homepage
+  }
 
   return (
     <div className="min-h-screen bg-[var(--color-background)] flex">
