@@ -39,7 +39,7 @@ export default function ProductDetailClient({ product, relatedProducts }: { prod
       name: product.name + (selectedSize ? ' — ' + selectedSize : ''),
       priceKobo: product.price_kobo,
       quantity: 1,
-      imageUrl: images[0]?.url
+      image: images[0]?.url
     })
     setAddedToCart(true)
     setTimeout(() => setAddedToCart(false), 2500)
