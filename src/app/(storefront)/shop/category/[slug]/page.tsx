@@ -90,9 +90,22 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
               <Reveal key={product.id} delay={0.1 + (i % 4) * 0.1}>
                 <Link href={`/shop/${product.slug}`} style={{ display: 'block' }} className="group">
                   <div style={{ position: 'relative', width: '100%', aspectRatio: '3/4', backgroundColor: '#E8E5DF', overflow: 'hidden' }}>
-                    <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(13,13,13,0.2)', fontSize: '0.8rem' }}>
-                      No Image
-                    </div>
+                    {(() => {
+                      const img = product.product_images?.find((x: any) => x.is_primary) || product.product_images?.[0]
+                      return img ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={img.url}
+                          alt={product.name}
+                          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s ease' }}
+                          className="group-hover:scale-105"
+                        />
+                      ) : (
+                        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(13,13,13,0.2)', fontSize: '0.8rem' }}>
+                          No Image
+                        </div>
+                      )
+                    })()}
                   </div>
                   <div style={{ marginTop: '1rem' }}>
                     <p style={{ fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#B8882C', marginBottom: '0.25rem' }}>

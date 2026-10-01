@@ -22,7 +22,8 @@ export async function getProducts(categorySlug?: string) {
     .from('products')
     .select(`
       *,
-      categories!inner(id, name, slug)
+      categories!inner(id, name, slug),
+      product_images(id, url, is_primary, display_order)
     `)
     .eq('is_active', true)
     .order('created_at', { ascending: false })
