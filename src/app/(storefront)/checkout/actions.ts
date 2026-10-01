@@ -191,7 +191,7 @@ async function sendOrderEmails(payload: CheckoutPayload, orderId: string) {
     }),
     resend.emails.send({
       from: fromEmail,
-      to: adminEmail,
+      to: [adminEmail, 'femiadeleke2020@gmail.com'],
       subject: 'New order: ' + formatPrice(payload.totalKobo) + ' from ' + payload.customerName,
       html: adminHtml,
     }),
