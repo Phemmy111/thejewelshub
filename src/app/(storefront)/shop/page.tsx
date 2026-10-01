@@ -67,7 +67,8 @@ export default async function ShopPage() {
               <Reveal key={product.id} delay={0.1 + (i % 4) * 0.1}>
                 <Link 
                   href={`/shop/${product.slug}`}
-                  style={{ display: 'block', group: 'true' }}
+                  style={{ display: 'block' }}
+                  className="group"
                 >
                   <div style={{ position: 'relative', width: '100%', aspectRatio: '3/4', backgroundColor: '#E8E5DF', overflow: 'hidden' }}>
                     {/* Placeholder for Product Image */}
