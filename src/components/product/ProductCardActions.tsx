@@ -6,7 +6,7 @@ import { useCartStore } from '@/store/cart'
 import { useRouter } from 'next/navigation'
 
 export function ProductCardActions({ product }: { product: any }) {
-  const { addItem, openCart } = useCartStore()
+  const { addItem, setIsOpen } = useCartStore()
   const router = useRouter()
   const [isLoved, setIsLoved] = useState(false)
 
@@ -30,7 +30,7 @@ export function ProductCardActions({ product }: { product: any }) {
       quantity: 1,
       image: product.product_images?.find((img: any) => img.is_primary)?.url || product.product_images?.[0]?.url,
     })
-    openCart()
+    setIsOpen(true)
   }
 
   const handleWishlist = (e: React.MouseEvent) => {
