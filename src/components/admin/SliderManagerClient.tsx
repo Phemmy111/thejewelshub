@@ -18,6 +18,10 @@ export function SliderManagerClient({ initialSliders, categories }: { initialSli
   const targetOptions = [
     { value: '/', label: 'Homepage Background Slider (/)' },
     { value: '/shop', label: 'Shop All Background Slider (/shop)' },
+    { value: 'home-cat-jewels', label: 'Homepage Card: Jewels' },
+    { value: 'home-cat-earrings', label: 'Homepage Card: Earrings' },
+    { value: 'home-cat-accessories', label: 'Homepage Card: Accessories' },
+    { value: 'home-cat-bracelets', label: 'Homepage Card: Bracelets' },
     ...categories.map(c => ({ value: `/shop/category/${c.slug}`, label: `Category: ${c.name} (/shop/category/${c.slug})` }))
   ]
 

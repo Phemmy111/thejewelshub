@@ -94,3 +94,21 @@ export async function getSliderConfig(targetPage: string) {
     return null
   }
 }
+
+export async function getAllSlidersConfig() {
+  try {
+    const supabase = await createClient()
+    const { data } = await supabase
+      .from('settings')
+      .select('value')
+      .eq('key', 'media_sliders')
+    
+    if (data && data.length > 0 && Array.isArray(data[0].value)) {
+      return data[0].value
+    }
+    return []
+  } catch (err) {
+    console.error('Error fetching all sliders config:', err)
+    return []
+  }
+}

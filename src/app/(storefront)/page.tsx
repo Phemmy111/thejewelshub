@@ -1,11 +1,29 @@
 import Link from 'next/link'
 import HeroSlider from '@/components/hero/HeroSlider'
 import { Reveal } from '@/components/ui/Reveal'
-import { getSliderConfig } from '@/lib/supabase/storefront'
+import { getSliderConfig, getAllSlidersConfig } from '@/lib/supabase/storefront'
 
 export default async function HomePage() {
   const whatsapp = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '2349133115713'
-  const sliderConfig = await getSliderConfig('/')
+  const [sliderConfig, allSliders] = await Promise.all([
+    getSliderConfig('/'),
+    getAllSlidersConfig()
+  ])
+
+  const getCatImg = (slug: string, fallback: string) => {
+    const customSlider = allSliders.find((s: any) => s.targetPage === `home-cat-${slug}`)
+    if (customSlider && customSlider.media && customSlider.media.length > 0) {
+      return customSlider.media[0].url
+    }
+    return fallback
+  }
+
+  const categoryTiles = [
+    { label: 'Jewels', slug: 'jewels', sub: 'Rings · Necklaces · Sets', href: '/shop/category/jewels', img: getCatImg('jewels', 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=800&auto=format&fit=crop') },
+    { label: 'Earrings', slug: 'earrings', sub: 'Studs · Drops · Hoops', href: '/shop/category/earrings', img: getCatImg('earrings', 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=800&auto=format&fit=crop') },
+    { label: 'Accessories', slug: 'accessories', sub: 'Watches · Sunglasses', href: '/shop/category/accessories', img: getCatImg('accessories', 'https://images.unsplash.com/photo-1524592094714-cb9c5e40e698?q=80&w=800&auto=format&fit=crop') },
+    { label: 'Bracelets', slug: 'bracelets', sub: 'Bangles · Chains', href: '/shop/category/bracelets', img: getCatImg('bracelets', 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?q=80&w=800&auto=format&fit=crop') },
+  ]
 
   return (
     <div style={{ backgroundColor: '#F5F4F0' }}>
@@ -56,12 +74,7 @@ export default async function HomePage() {
         </Reveal>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[
-            { label: 'Jewels', sub: 'Rings · Necklaces · Sets', href: '/shop/category/jewels', img: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=800&auto=format&fit=crop' },
-            { label: 'Earrings', sub: 'Studs · Drops · Hoops', href: '/shop/category/earrings', img: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=800&auto=format&fit=crop' },
-            { label: 'Accessories', sub: 'Watches · Sunglasses', href: '/shop/category/accessories', img: 'https://images.unsplash.com/photo-1524592094714-cb9c5e40e698?q=80&w=800&auto=format&fit=crop' },
-            { label: 'Bracelets', sub: 'Bangles · Chains', href: '/shop/category/bracelets', img: 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?q=80&w=800&auto=format&fit=crop' },
-          ].map((cat, i) => (
+          {categoryTiles.map((cat, i) => (
             <Reveal key={cat.label} delay={i * 0.1}>
               <Link href={cat.href} className="cat-tile" style={{ backgroundImage: `url(${cat.img})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
                 <div className="cat-tile-overlay" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.7), transparent)' }} />
