@@ -45,10 +45,10 @@ export default async function AdminLayout({
   }
 
   return (
-    <div className="min-h-screen bg-[var(--color-background)] flex">
+    <div className="h-screen bg-[var(--color-background)] flex overflow-hidden">
       {/* Sidebar */}
-      <aside className="hidden md:flex w-64 flex-col bg-black text-white min-h-screen">
-        <div className="px-6 py-5 border-b border-white/10">
+      <aside className="hidden md:flex flex-shrink-0 w-64 flex-col bg-black text-white h-full overflow-y-auto">
+        <div className="px-6 py-5 border-b border-white/10 shrink-0">
           <Link href="/admin">
             <span className="font-display text-lg font-bold text-[var(--color-gold)]">
               JH Admin
@@ -80,7 +80,7 @@ export default async function AdminLayout({
             </Link>
           ))}
         </nav>
-        <div className="px-6 py-4 border-t border-white/10">
+        <div className="px-6 py-4 border-t border-white/10 shrink-0">
           <Link
             href="/"
             className="text-xs text-white/40 hover:text-white/70 transition-colors"
@@ -91,11 +91,11 @@ export default async function AdminLayout({
       </aside>
 
       {/* Main content */}
-      <div className="flex-1 flex flex-col">
-        <header className="bg-white border-b border-[var(--color-border)] px-6 py-4 flex items-center justify-between">
+      <div className="flex-1 flex flex-col h-full overflow-hidden">
+        <header className="bg-white border-b border-[var(--color-border)] px-6 py-4 flex items-center justify-between shrink-0">
           <span className="text-sm text-[var(--color-muted)] font-medium">Admin Dashboard</span>
         </header>
-        <main className="flex-1 p-6">{children}</main>
+        <main className="flex-1 overflow-y-auto p-6">{children}</main>
       </div>
     </div>
   )
