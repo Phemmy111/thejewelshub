@@ -4,26 +4,37 @@ import { createAdminClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 
 export async function getMediaSliders() {
-  const supabase = await createAdminClient()
-  const { data } = await supabase.from('settings').select('value').eq('key', 'media_sliders').single()
-  return data?.value || []
+  try {
+    const supabase = await createAdminClient()
+    const { data } = await supabase.from('settings').select('value').eq('key', 'media_sliders')
+    if (data && data.length > 0) {
+      return data[0].value
+    }
+    return []
+  } catch (err) {
+    console.error('getMediaSliders error:', err)
+    return []
+  }
 }
 
 export async function saveMediaSliders(sliders: any) {
-  const supabase = await createAdminClient()
-  const { error } = await supabase.from('settings').upsert({ 
-    key: 'media_sliders', 
-    value: sliders, 
-    updated_at: new Date().toISOString() 
-  })
-  
-  if (error) {
-    console.error('Save sliders error:', error)
-    throw new Error('Failed to save sliders')
-  }
+  try {
+    const supabase = await createAdminClient()
+    const { error } = await supabase.from('settings').upsert({ 
+      key: 'media_sliders', 
+      value: sliders, 
+      updated_at: new Date().toISOString() 
+    })
+    
+    if (error) {
+      return { success: false, error: error.message }
+    }
 
-  revalidatePath('/', 'layout') // Revalidate everything so frontend picks up new sliders
-  return true
+    revalidatePath('/', 'layout')
+    return { success: true }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Unknown error' }
+  }
 }
 
 export async function uploadSliderFiles(formData: FormData) {

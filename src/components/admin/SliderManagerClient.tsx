@@ -59,13 +59,19 @@ export function SliderManagerClient({ initialSliders, categories }: { initialSli
         updatedSliders.push(newSlider)
       }
 
-      await saveMediaSliders(updatedSliders)
+      const saveResult = await saveMediaSliders(updatedSliders)
+      if (saveResult && !saveResult.success) {
+        alert('Failed to save slider to database: ' + saveResult.error)
+        setIsSubmitting(false)
+        return
+      }
+
       setSliders(updatedSliders)
       setIsModalOpen(false)
       setSelectedFiles([])
-    } catch (err) {
+    } catch (err: any) {
       console.error(err)
-      alert('Failed to save slider')
+      alert('Failed to save slider: ' + err.message)
     } finally {
       setIsSubmitting(false)
     }
@@ -74,7 +80,11 @@ export function SliderManagerClient({ initialSliders, categories }: { initialSli
   const handleDeleteSlider = async (id: string) => {
     if (!confirm('Are you sure you want to delete this entire slider?')) return
     const updated = sliders.filter(s => s.id !== id)
-    await saveMediaSliders(updated)
+    const result = await saveMediaSliders(updated)
+    if (result && !result.success) {
+      alert('Delete failed: ' + result.error)
+      return
+    }
     setSliders(updated)
   }
 
@@ -87,7 +97,11 @@ export function SliderManagerClient({ initialSliders, categories }: { initialSli
       }
       return s
     })
-    await saveMediaSliders(updated)
+    const result = await saveMediaSliders(updated)
+    if (result && !result.success) {
+      alert('Delete failed: ' + result.error)
+      return
+    }
     setSliders(updated)
   }
 
