@@ -2,7 +2,6 @@ import { createAdminClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { auth } from '@clerk/nextjs/server'
 import { formatPrice } from '@/lib/utils'
-import { format } from 'date-fns'
 
 export default async function AdminCustomersPage() {
   const { userId } = await auth()
@@ -82,7 +81,7 @@ export default async function AdminCustomersPage() {
                     {formatPrice(cust.totalSpent)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {format(new Date(cust.lastOrderDate), 'MMM d, yyyy')}
+                    {new Date(cust.lastOrderDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                   </td>
                 </tr>
               ))}

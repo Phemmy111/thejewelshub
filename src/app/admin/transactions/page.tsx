@@ -2,7 +2,6 @@ import { createAdminClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { auth } from '@clerk/nextjs/server'
 import { formatPrice } from '@/lib/utils'
-import { format } from 'date-fns'
 
 export default async function AdminTransactionsPage() {
   const { userId } = await auth()
@@ -46,7 +45,7 @@ export default async function AdminTransactionsPage() {
               {transactions.map((tx: any) => (
                 <tr key={tx.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {format(new Date(tx.created_at), 'MMM d, yyyy HH:mm')}
+                    {new Date(tx.created_at).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-600">
                     {tx.reference}
