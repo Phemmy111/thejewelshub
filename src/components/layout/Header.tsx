@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { ShoppingBag, Search, User, Menu, X, Settings, Package } from 'lucide-react'
+import { ShoppingBag, Search, User, Menu, X, Settings, Package, Heart } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 import { useCartStore } from '@/store/cart'
@@ -110,7 +110,10 @@ export default function Header() {
           
           <span key="auth">
             <SignedIn>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
+                <Link href="/wishlist" aria-label="Saved for later" className="p-2 rounded-full transition-colors hover:bg-black/5 block" title="Saved for Later">
+                  <Heart size={19} style={{ color: scrolled ? '#0D0D0D' : '#FFFFFF' }} />
+                </Link>
                 <Link href="/account/orders" aria-label="My Orders" className="p-2 rounded-full transition-colors hover:bg-black/5 block" title="My Orders">
                   <Package size={19} style={{ color: scrolled ? '#0D0D0D' : '#FFFFFF' }} />
                 </Link>
@@ -170,10 +173,16 @@ export default function Header() {
           ))}
           <div className="border-t border-[#E8E5DF] pt-4 mt-2">
             <SignedIn>
-              <Link href="/account/orders" className="text-base font-medium flex items-center gap-2 text-[#0D0D0D]" onClick={() => setMobileOpen(false)}>
-                <Package size={18} />
-                My Orders
-              </Link>
+              <div className="flex flex-col gap-4">
+                <Link href="/wishlist" className="text-base font-medium flex items-center gap-2 text-[#0D0D0D]" onClick={() => setMobileOpen(false)}>
+                  <Heart size={18} />
+                  Saved for Later
+                </Link>
+                <Link href="/account/orders" className="text-base font-medium flex items-center gap-2 text-[#0D0D0D]" onClick={() => setMobileOpen(false)}>
+                  <Package size={18} />
+                  My Orders
+                </Link>
+              </div>
             </SignedIn>
             <SignedOut>
               <Link href="/sign-in" className="text-sm font-medium" style={{ color: '#B8882C' }} onClick={() => setMobileOpen(false)}>

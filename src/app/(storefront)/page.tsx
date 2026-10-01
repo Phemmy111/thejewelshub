@@ -40,24 +40,42 @@ export default async function HomePage() {
         .shop-all-link:hover { opacity: 0.7; }
         .arrival-card { transition: transform 0.4s; cursor: pointer; }
         .arrival-card:hover { transform: translateY(-4px); }
+        
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        .marquee-container {
+          overflow: hidden;
+          white-space: nowrap;
+          width: 100%;
+        }
+        .marquee-content {
+          display: inline-flex;
+          animation: marquee 35s linear infinite;
+        }
+        .marquee-content:hover {
+          animation-play-state: paused;
+        }
       `}</style>
 
       {/* ── HERO SLIDER ─────────────────────────────────────────────────── */}
       <HeroSlider sliderConfig={sliderConfig} />
 
       {/* ── TRUST STRIP ──────────────────────────────────────────────────── */}
-      {/* Changed to uniform light ash with dark text */}
-      <section style={{ backgroundColor: '#F5F4F0', borderTop: '1px solid rgba(13,13,13,0.06)', borderBottom: '1px solid rgba(13,13,13,0.06)' }}>
-        <div className="max-w-6xl mx-auto px-5 sm:px-8 py-5 flex flex-wrap justify-center gap-8"
-          style={{ fontSize: '0.7rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#7A7069', fontWeight: 600 }}>
-          {['Secure Paystack Checkout', 'Delivery Across All 36 States', 'WhatsApp Customer Support', 'Authentic Products Guaranteed'].map((item, i) => (
-            <Reveal key={item} delay={i * 0.1}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <span style={{ display: 'inline-block', width: '4px', height: '4px', borderRadius: '50%', backgroundColor: '#B8882C', flexShrink: 0 }} />
-                {item}
-              </span>
-            </Reveal>
-          ))}
+      <section style={{ backgroundColor: '#F5F4F0', borderTop: '1px solid rgba(13,13,13,0.06)', borderBottom: '1px solid rgba(13,13,13,0.06)', padding: '1.25rem 0' }}>
+        <div className="marquee-container" style={{ fontSize: '0.7rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#7A7069', fontWeight: 600 }}>
+          <div className="marquee-content">
+            {/* We duplicate the array 4 times so the scrolling is perfectly endless and seamless */}
+            {[...Array(4)].flatMap((_, arrayIndex) => (
+              ['Secure Paystack Checkout', 'Delivery Across All 36 States', 'Premium Quality Pieces', 'WhatsApp Customer Support', 'Authentic Products Guaranteed', 'Handcrafted Elegance', '100% Secure Checkout', 'Fast Nationwide Shipping'].map((item, i) => (
+                <span key={`${arrayIndex}-${i}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0 2.5rem' }}>
+                  <span style={{ display: 'inline-block', width: '4px', height: '4px', borderRadius: '50%', backgroundColor: '#B8882C', flexShrink: 0 }} />
+                  {item}
+                </span>
+              ))
+            ))}
+          </div>
         </div>
       </section>
 
