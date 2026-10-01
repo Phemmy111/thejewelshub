@@ -62,37 +62,39 @@ export default function CheckoutClient() {
             { display_name: 'Phone', variable_name: 'phone', value: phone },
           ],
         },
-        callback: async (response: { reference: string }) => {
-          try {
-            const result = await verifyAndSaveOrder({
-              reference: response.reference,
-              customerName: name,
-              customerEmail: email,
-              customerPhone: phone,
-              deliveryAddress: address,
-              items: items.map((i: CartItem) => ({
-                productId: i.productId,
-                name: i.name,
-                priceKobo: i.priceKobo,
-                quantity: i.quantity,
-                image: i.image,
-                size: i.size,
-                color: i.color,
-              })),
-              totalKobo: total,
-            })
+        callback: function(response: { reference: string }) {
+          (async () => {
+            try {
+              const result = await verifyAndSaveOrder({
+                reference: response.reference,
+                customerName: name,
+                customerEmail: email,
+                customerPhone: phone,
+                deliveryAddress: address,
+                items: items.map((i: CartItem) => ({
+                  productId: i.productId,
+                  name: i.name,
+                  priceKobo: i.priceKobo,
+                  quantity: i.quantity,
+                  image: i.image,
+                  size: i.size,
+                  color: i.color,
+                })),
+                totalKobo: total,
+              })
 
-            if (result.success) {
-              clearCart()
-              router.push('/order-confirmed?ref=' + response.reference)
-            } else {
-              setError(result.error || 'Payment was received but order could not be saved. Please contact us.')
+              if (result.success) {
+                clearCart()
+                router.push('/order-confirmed?ref=' + response.reference)
+              } else {
+                setError(result.error || 'Payment was received but order could not be saved. Please contact us.')
+                setIsProcessing(false)
+              }
+            } catch (err: any) {
+              setError('Something went wrong after payment: ' + err.message)
               setIsProcessing(false)
             }
-          } catch (err: any) {
-            setError('Something went wrong after payment: ' + err.message)
-            setIsProcessing(false)
-          }
+          })()
         },
         onClose: () => {
           setIsProcessing(false)
