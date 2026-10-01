@@ -41,13 +41,13 @@ const slides = [
   },
 ]
 
-export default function HeroSlider({ sliderConfig }: { sliderConfig?: any }) {
+export default function HeroSlider({ sliderConfig, pageContext }: { sliderConfig?: any, pageContext?: any }) {
   const [active, setActive] = useState(0)
   const [progress, setProgress] = useState(0)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const startRef = useRef<number>(Date.now())
 
-  const mediaItems = sliderConfig?.media?.length > 0 ? sliderConfig.media : slides.map(s => ({ bg: s.bg }))
+  const mediaItems = sliderConfig?.media?.length > 0 ? sliderConfig.media : slides.map((s) => ({ bg: s.bg }))
   const duration = sliderConfig?.duration || DURATION
   const transition = sliderConfig?.transition || 'fade'
 
@@ -80,7 +80,8 @@ export default function HeroSlider({ sliderConfig }: { sliderConfig?: any }) {
       
       {/* Slides (Background + Content combined for smooth crossfade) */}
       {mediaItems.map((media: any, i: number) => {
-        const textSlide = slides[i % slides.length] // cycle through the stylish text automatically
+        // Use pageContext if provided, otherwise cycle through the homepage text slides
+        const textSlide = pageContext || slides[i % slides.length] 
         
         let transformStyle = 'scale(1)'
         if (transition === 'zoom') {
@@ -119,7 +120,7 @@ export default function HeroSlider({ sliderConfig }: { sliderConfig?: any }) {
                 className="absolute inset-0 w-full h-full object-cover" 
               />
             ) : (
-              <div className="absolute inset-0" style={{ background: media.bg }} />
+              <div className="absolute inset-0" style={{ background: media.bg || slides[0].bg }} />
             )}
 
             {/* Diagonal gold texture */}
@@ -130,7 +131,7 @@ export default function HeroSlider({ sliderConfig }: { sliderConfig?: any }) {
             
             {/* Gold orb glow */}
             <div className="absolute pointer-events-none" style={{
-              left: textSlide.accentX, top: textSlide.accentY,
+              left: textSlide.accentX || '50%', top: textSlide.accentY || '50%',
               width: '420px', height: '420px',
               transform: 'translate(-50%, -50%)',
               background: 'radial-gradient(circle, rgba(184,136,44,0.18) 0%, transparent 70%)',
@@ -159,7 +160,7 @@ export default function HeroSlider({ sliderConfig }: { sliderConfig?: any }) {
                 </div>
 
                 <h1 style={{ fontSize: 'clamp(3rem, 7vw, 6rem)', lineHeight: 1.05, letterSpacing: '-0.02em', color: '#FFFFFF', margin: 0 }}>
-                  {textSlide.lines.map((line, li) => (
+                  {textSlide.lines.map((line: string, li: number) => (
                     <div
                       key={li}
                       className="font-display font-bold"
@@ -179,9 +180,11 @@ export default function HeroSlider({ sliderConfig }: { sliderConfig?: any }) {
                 </p>
 
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.875rem', marginTop: '2.25rem' }}>
-                  <Link href={textSlide.cta.href} className="hero-btn-primary" style={{ display: 'inline-flex', alignItems: 'center', padding: '0.875rem 1.75rem', fontWeight: 700, fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase', transition: 'background-color 0.2s' }}>
-                    {textSlide.cta.label}
-                  </Link>
+                  {textSlide.cta && (
+                    <Link href={textSlide.cta.href} className="hero-btn-primary" style={{ display: 'inline-flex', alignItems: 'center', padding: '0.875rem 1.75rem', fontWeight: 700, fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase', transition: 'background-color 0.2s' }}>
+                      {textSlide.cta.label}
+                    </Link>
+                  )}
                   {textSlide.cta2 && (
                     <Link href={textSlide.cta2.href} className="hero-btn-outline" style={{ display: 'inline-flex', alignItems: 'center', padding: '0.875rem 1.75rem', fontWeight: 600, fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
                       {textSlide.cta2.label}

@@ -21,7 +21,14 @@ export default async function ShopPage() {
       `}</style>
       
       {sliderConfig && sliderConfig.media && sliderConfig.media.length > 0 && (
-        <HeroSlider sliderConfig={sliderConfig} />
+        <HeroSlider sliderConfig={sliderConfig} pageContext={{
+          eyebrow: 'The Full Collection',
+          lines: ['Everything', 'In One', 'Place.'],
+          highlight: 0,
+          sub: 'Browse the complete jewellery catalog — rings, necklaces, bangles, and beyond.',
+          cta: { href: '/shop', label: 'Browse All' },
+          accentX: '70%', accentY: '30%'
+        }} />
       )}
 
       {/* ── HEADER ────────────────────────────────────────────────────────── */}
