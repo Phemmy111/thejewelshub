@@ -41,11 +41,15 @@ const slides = [
   },
 ]
 
-export default function HeroSlider() {
+export default function HeroSlider({ sliderConfig }: { sliderConfig?: any }) {
   const [active, setActive] = useState(0)
   const [progress, setProgress] = useState(0)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const startRef = useRef<number>(Date.now())
+
+  const mediaItems = sliderConfig?.media?.length > 0 ? sliderConfig.media : slides.map(s => ({ bg: s.bg }))
+  const duration = sliderConfig?.duration || DURATION
+  const transition = sliderConfig?.transition || 'fade'
 
   const goTo = useCallback((idx: number) => {
     setActive(idx)
@@ -53,117 +57,150 @@ export default function HeroSlider() {
     startRef.current = Date.now()
   }, [])
 
-  const next = useCallback(() => goTo((active + 1) % slides.length), [active, goTo])
+  const next = useCallback(() => goTo((active + 1) % mediaItems.length), [active, goTo, mediaItems.length])
 
   // Auto-advance
   useEffect(() => {
-    timerRef.current = setInterval(next, DURATION)
+    timerRef.current = setInterval(next, duration)
     return () => { if (timerRef.current) clearInterval(timerRef.current) }
-  }, [next])
+  }, [next, duration])
 
   // Progress bar
   useEffect(() => {
     const raf = requestAnimationFrame(function tick() {
       const elapsed = Date.now() - startRef.current
-      setProgress(Math.min(elapsed / DURATION, 1))
+      setProgress(Math.min(elapsed / duration, 1))
       requestAnimationFrame(tick)
     })
     return () => cancelAnimationFrame(raf)
-  }, [active])
+  }, [active, duration])
 
   return (
     <section className="relative w-full overflow-hidden" style={{ minHeight: '100vh', backgroundColor: '#080808' }}>
       
       {/* Slides (Background + Content combined for smooth crossfade) */}
-      {slides.map((slide, i) => (
-        <div
-          key={slide.id}
-          className="absolute inset-0 transition-opacity duration-1000 ease-in-out flex flex-col justify-center"
-          style={{
-            background: slide.bg,
-            opacity: i === active ? 1 : 0,
-            zIndex: i === active ? 2 : 1,
-            pointerEvents: i === active ? 'auto' : 'none',
-          }}
-        >
-          {/* Diagonal gold texture */}
-          <div className="absolute inset-0" style={{
-            opacity: 0.035,
-            backgroundImage: 'repeating-linear-gradient(-45deg, #B8882C 0px, #B8882C 1px, transparent 1px, transparent 55px)',
-          }} />
-          
-          {/* Gold orb glow */}
-          <div className="absolute pointer-events-none" style={{
-            left: slide.accentX, top: slide.accentY,
-            width: '420px', height: '420px',
-            transform: 'translate(-50%, -50%)',
-            background: 'radial-gradient(circle, rgba(184,136,44,0.18) 0%, transparent 70%)',
-            borderRadius: '50%',
-          }} />
-          
-          {/* Gradient overlay */}
-          <div className="absolute inset-0" style={{
-            background: 'linear-gradient(90deg, rgba(8,8,8,0.92) 0%, rgba(8,8,8,0.6) 55%, rgba(8,8,8,0.1) 100%)',
-          }} />
+      {mediaItems.map((media: any, i: number) => {
+        const textSlide = slides[i % slides.length] // cycle through the stylish text automatically
+        
+        let transformStyle = 'scale(1)'
+        if (transition === 'zoom') {
+          transformStyle = i === active ? 'scale(1)' : 'scale(1.1)'
+        } else if (transition === 'slide') {
+          transformStyle = i === active ? 'translateX(0)' : 'translateX(10%)'
+        }
 
-          {/* Faded JH watermark */}
-          <div className="absolute right-0 top-0 bottom-0 pointer-events-none select-none" style={{ width: '50%', opacity: 0.055, zIndex: 3 }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/brand/logo.jpg" alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', objectPosition: 'right center', filter: 'invert(1)' }} />
-          </div>
+        return (
+          <div
+            key={i}
+            className="absolute inset-0 flex flex-col justify-center"
+            style={{
+              transition: `opacity 1000ms ease-in-out, transform ${duration}ms linear`,
+              opacity: i === active ? 1 : 0,
+              zIndex: i === active ? 2 : 1,
+              pointerEvents: i === active ? 'auto' : 'none',
+              transform: transformStyle,
+            }}
+          >
+            {/* Dynamic Background */}
+            {media.isVideo ? (
+              <video 
+                src={media.url} 
+                autoPlay 
+                muted 
+                loop 
+                playsInline 
+                className="absolute inset-0 w-full h-full object-cover" 
+              />
+            ) : media.url ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img 
+                src={media.url} 
+                alt="" 
+                className="absolute inset-0 w-full h-full object-cover" 
+              />
+            ) : (
+              <div className="absolute inset-0" style={{ background: media.bg }} />
+            )}
 
-          {/* Text Content */}
-          <div className="relative z-10 w-full max-w-7xl mx-auto px-5 sm:px-8 flex items-center" style={{ paddingTop: '2rem' }}>
-            <div style={{ maxWidth: '580px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.75rem' }}>
-                <span style={{ display: 'block', width: '36px', height: '1px', backgroundColor: '#B8882C', flexShrink: 0 }} />
-                <span style={{ fontSize: '0.68rem', fontWeight: 600, letterSpacing: '0.28em', textTransform: 'uppercase', color: '#B8882C' }}>
-                  {slide.eyebrow}
-                </span>
-              </div>
+            {/* Diagonal gold texture */}
+            <div className="absolute inset-0" style={{
+              opacity: 0.035,
+              backgroundImage: 'repeating-linear-gradient(-45deg, #B8882C 0px, #B8882C 1px, transparent 1px, transparent 55px)',
+            }} />
+            
+            {/* Gold orb glow */}
+            <div className="absolute pointer-events-none" style={{
+              left: textSlide.accentX, top: textSlide.accentY,
+              width: '420px', height: '420px',
+              transform: 'translate(-50%, -50%)',
+              background: 'radial-gradient(circle, rgba(184,136,44,0.18) 0%, transparent 70%)',
+              borderRadius: '50%',
+            }} />
+            
+            {/* Gradient overlay to ensure text is readable over user uploads */}
+            <div className="absolute inset-0" style={{
+              background: 'linear-gradient(90deg, rgba(8,8,8,0.92) 0%, rgba(8,8,8,0.7) 45%, rgba(8,8,8,0.2) 100%)',
+            }} />
 
-              <h1 style={{ fontSize: 'clamp(3rem, 7vw, 6rem)', lineHeight: 1.05, letterSpacing: '-0.02em', color: '#FFFFFF', margin: 0 }}>
-                {slide.lines.map((line, li) => (
-                  <div
-                    key={li}
-                    className="font-display font-bold"
-                    style={{
-                      display: 'block',
-                      color: li === slide.highlight ? '#B8882C' : '#FFFFFF',
-                      fontStyle: li === slide.highlight ? 'italic' : 'normal',
-                    }}
-                  >
-                    {line}
-                  </div>
-                ))}
-              </h1>
+            {/* Faded JH watermark */}
+            <div className="absolute right-0 top-0 bottom-0 pointer-events-none select-none" style={{ width: '50%', opacity: 0.055, zIndex: 3 }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/brand/logo.jpg" alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', objectPosition: 'right center', filter: 'invert(1)' }} />
+            </div>
 
-              <p style={{ marginTop: '1.5rem', color: 'rgba(255,255,255,0.58)', fontSize: '1rem', lineHeight: 1.75, maxWidth: '400px' }}>
-                {slide.sub}
-              </p>
+            {/* Text Content */}
+            <div className="relative z-10 w-full max-w-7xl mx-auto px-5 sm:px-8 flex items-center" style={{ paddingTop: '2rem' }}>
+              <div style={{ maxWidth: '580px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.75rem' }}>
+                  <span style={{ display: 'block', width: '36px', height: '1px', backgroundColor: '#B8882C', flexShrink: 0 }} />
+                  <span style={{ fontSize: '0.68rem', fontWeight: 600, letterSpacing: '0.28em', textTransform: 'uppercase', color: '#B8882C' }}>
+                    {textSlide.eyebrow}
+                  </span>
+                </div>
 
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.875rem', marginTop: '2.25rem' }}>
-                <Link href={slide.cta.href} className="hero-btn-primary" style={{ display: 'inline-flex', alignItems: 'center', padding: '0.875rem 1.75rem', fontWeight: 700, fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase', transition: 'background-color 0.2s' }}>
-                  {slide.cta.label}
-                </Link>
-                {slide.cta2 && (
-                  <Link href={slide.cta2.href} className="hero-btn-outline" style={{ display: 'inline-flex', alignItems: 'center', padding: '0.875rem 1.75rem', fontWeight: 600, fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-                    {slide.cta2.label}
+                <h1 style={{ fontSize: 'clamp(3rem, 7vw, 6rem)', lineHeight: 1.05, letterSpacing: '-0.02em', color: '#FFFFFF', margin: 0 }}>
+                  {textSlide.lines.map((line, li) => (
+                    <div
+                      key={li}
+                      className="font-display font-bold"
+                      style={{
+                        display: 'block',
+                        color: li === textSlide.highlight ? '#B8882C' : '#FFFFFF',
+                        fontStyle: li === textSlide.highlight ? 'italic' : 'normal',
+                      }}
+                    >
+                      {line}
+                    </div>
+                  ))}
+                </h1>
+
+                <p style={{ marginTop: '1.5rem', color: 'rgba(255,255,255,0.58)', fontSize: '1rem', lineHeight: 1.75, maxWidth: '400px' }}>
+                  {textSlide.sub}
+                </p>
+
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.875rem', marginTop: '2.25rem' }}>
+                  <Link href={textSlide.cta.href} className="hero-btn-primary" style={{ display: 'inline-flex', alignItems: 'center', padding: '0.875rem 1.75rem', fontWeight: 700, fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase', transition: 'background-color 0.2s' }}>
+                    {textSlide.cta.label}
                   </Link>
-                )}
+                  {textSlide.cta2 && (
+                    <Link href={textSlide.cta2.href} className="hero-btn-outline" style={{ display: 'inline-flex', alignItems: 'center', padding: '0.875rem 1.75rem', fontWeight: 600, fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+                      {textSlide.cta2.label}
+                    </Link>
+                  )}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      ))}
+        )
+      })}
 
       {/* Slide counter + dots */}
       <div className="absolute bottom-10 left-5 sm:left-8 z-20 flex items-center gap-5">
         <span style={{ fontFamily: 'monospace', fontSize: '0.7rem', color: 'rgba(255,255,255,0.35)', letterSpacing: '0.1em' }}>
-          {String(active + 1).padStart(2, '0')} / {String(slides.length).padStart(2, '0')}
+          {String(active + 1).padStart(2, '0')} / {String(mediaItems.length).padStart(2, '0')}
         </span>
         <div style={{ display: 'flex', gap: '8px' }}>
-          {slides.map((_, i) => (
+          {mediaItems.map((_, i) => (
             <button
               key={i}
               onClick={() => goTo(i)}

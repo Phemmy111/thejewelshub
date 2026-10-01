@@ -1,9 +1,11 @@
 import Link from 'next/link'
 import HeroSlider from '@/components/hero/HeroSlider'
 import { Reveal } from '@/components/ui/Reveal'
+import { getSliderConfig } from '@/lib/supabase/storefront'
 
-export default function HomePage() {
+export default async function HomePage() {
   const whatsapp = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '2349133115713'
+  const sliderConfig = await getSliderConfig('/')
 
   return (
     <div style={{ backgroundColor: '#F5F4F0' }}>
@@ -23,7 +25,7 @@ export default function HomePage() {
       `}</style>
 
       {/* ── HERO SLIDER ─────────────────────────────────────────────────── */}
-      <HeroSlider />
+      <HeroSlider sliderConfig={sliderConfig} />
 
       {/* ── TRUST STRIP ──────────────────────────────────────────────────── */}
       {/* Changed to uniform light ash with dark text */}

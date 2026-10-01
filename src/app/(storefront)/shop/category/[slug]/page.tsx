@@ -1,17 +1,19 @@
-import { getProducts, getCategories } from '@/lib/supabase/storefront'
+import { getProducts, getCategories, getSliderConfig } from '@/lib/supabase/storefront'
 import { Reveal } from '@/components/ui/Reveal'
 import Link from 'next/link'
 import { formatPrice } from '@/lib/utils'
 import { notFound } from 'next/navigation'
+import HeroSlider from '@/components/hero/HeroSlider'
 
 export const revalidate = 60
 
 export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   
-  const [products, categories] = await Promise.all([
+  const [products, categories, sliderConfig] = await Promise.all([
     getProducts(slug),
-    getCategories()
+    getCategories(),
+    getSliderConfig(`/shop/category/${slug}`)
   ])
 
   const currentCategory = categories.find((c: any) => c.slug === slug)
@@ -21,15 +23,19 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
   }
 
   return (
-    <div style={{ backgroundColor: '#F5F4F0', minHeight: '100vh', paddingTop: '100px', paddingBottom: '100px' }}>
+    <div style={{ backgroundColor: '#F5F4F0', minHeight: '100vh', paddingBottom: '100px' }}>
       <style>{`
         .cat-pill { padding: 0.5rem 1.25rem; background-color: transparent; border: 1px solid rgba(13,13,13,0.2); color: #0D0D0D; font-size: 0.75rem; font-weight: 600; border-radius: 2px; text-transform: uppercase; letter-spacing: 0.08em; transition: border-color 0.2s; }
         .cat-pill:hover { border-color: #0D0D0D; }
         .cat-pill.active { background-color: #0D0D0D; color: #fff; border-color: #0D0D0D; }
       `}</style>
       
+      {sliderConfig && sliderConfig.media && sliderConfig.media.length > 0 && (
+        <HeroSlider sliderConfig={sliderConfig} />
+      )}
+
       {/* ── HEADER ────────────────────────────────────────────────────────── */}
-      <section className="max-w-7xl mx-auto px-5 sm:px-8 mb-12">
+      <section className="max-w-7xl mx-auto px-5 sm:px-8 mb-12" style={{ paddingTop: sliderConfig ? '4rem' : '100px' }}>
         <Reveal>
           <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', borderBottom: '1px solid rgba(13,13,13,0.1)', paddingBottom: '2rem' }}>
             <div>

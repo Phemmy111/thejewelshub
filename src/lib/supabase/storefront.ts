@@ -58,3 +58,21 @@ export async function getProductBySlug(slug: string) {
   }
   return data
 }
+
+export async function getSliderConfig(targetPage: string) {
+  try {
+    const supabase = await createClient()
+    const { data } = await supabase
+      .from('settings')
+      .select('value')
+      .eq('key', 'media_sliders')
+    
+    if (data && data.length > 0 && Array.isArray(data[0].value)) {
+      return data[0].value.find((s: any) => s.targetPage === targetPage) || null
+    }
+    return null
+  } catch (err) {
+    console.error('Error fetching slider config:', err)
+    return null
+  }
+}
