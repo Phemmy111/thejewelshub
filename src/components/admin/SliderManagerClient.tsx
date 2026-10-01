@@ -218,14 +218,28 @@ export function SliderManagerClient({ initialSliders, categories }: { initialSli
                 <div className="border-2 border-dashed border-[#E8E5DF] rounded-xl p-8 flex flex-col items-center justify-center text-center bg-[#F5F4F0]/50">
                   {selectedFiles.length > 0 ? (
                     <div className="flex gap-4 flex-wrap justify-center">
-                      {selectedFiles.map((f, i) => (
-                        <div key={i} className="relative w-24 h-24 rounded-lg bg-black/5 overflow-hidden flex items-center justify-center">
-                          <span className="text-xs font-bold truncate px-2 w-full text-center">{f.name}</span>
-                          <button onClick={() => setSelectedFiles(prev => prev.filter((_, idx) => idx !== i))} className="absolute top-1 right-1 bg-white rounded-full p-1 shadow-sm text-red-500 hover:bg-red-50">
-                            <X size={12} />
-                          </button>
-                        </div>
-                      ))}
+                      {selectedFiles.map((f, i) => {
+                        const isVideo = f.type.startsWith('video/')
+                        const objectUrl = URL.createObjectURL(f)
+                        return (
+                          <div key={i} className="relative w-24 h-24 rounded-lg bg-black/5 overflow-hidden flex items-center justify-center border border-[#E8E5DF]">
+                            {isVideo ? (
+                              <video src={objectUrl} className="w-full h-full object-cover opacity-80" muted />
+                            ) : (
+                              <img src={objectUrl} className="w-full h-full object-cover" />
+                            )}
+                            <div className="absolute top-1 left-1 text-white drop-shadow-md">
+                              {isVideo ? <Video size={12} /> : <ImageIcon size={12} />}
+                            </div>
+                            <button onClick={() => {
+                              setSelectedFiles(prev => prev.filter((_, idx) => idx !== i))
+                              URL.revokeObjectURL(objectUrl)
+                            }} className="absolute top-1 right-1 bg-white rounded-full p-1 shadow-sm text-red-500 hover:bg-red-50">
+                              <X size={12} />
+                            </button>
+                          </div>
+                        )
+                      })}
                     </div>
                   ) : (
                     <>
