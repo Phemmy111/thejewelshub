@@ -2,10 +2,9 @@ import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 
 const isAdminRoute = createRouteMatcher(['/admin(.*)'])
-const isAuthRoute = createRouteMatcher(['/sign-in(.*)', '/sign-up(.*)'])
 
 export default clerkMiddleware(async (auth, req) => {
-  // Admin routes: must be signed in (email check happens server-side in each page)
+  // Admin routes: must be signed in (email-level check happens server-side in each admin page)
   if (isAdminRoute(req)) {
     await auth.protect()
   }
