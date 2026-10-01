@@ -15,6 +15,9 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
   return (
     <div style={{ backgroundColor: '#F5F4F0', minHeight: '100vh', paddingTop: '100px', paddingBottom: '100px' }}>
+      <style>{`
+        .btn-cart:hover { background-color: #1A1A1A !important; }
+      `}</style>
       <div className="max-w-7xl mx-auto px-5 sm:px-8">
         
         {/* Breadcrumb */}
@@ -55,10 +58,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               {product.description}
             </div>
 
-            <button style={{ width: '100%', padding: '1.25rem', backgroundColor: '#0D0D0D', color: '#fff', fontSize: '0.85rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', border: 'none', cursor: 'pointer', transition: 'background-color 0.2s' }}
-              onMouseEnter={e => e.currentTarget.style.backgroundColor = '#1A1A1A'}
-              onMouseLeave={e => e.currentTarget.style.backgroundColor = '#0D0D0D'}
-            >
+            <button className="btn-cart" style={{ width: '100%', padding: '1.25rem', backgroundColor: '#0D0D0D', color: '#fff', fontSize: '0.85rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', border: 'none', cursor: 'pointer', transition: 'background-color 0.2s' }}>
               Add to Cart
             </button>
             

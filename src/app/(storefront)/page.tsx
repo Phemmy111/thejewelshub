@@ -8,6 +8,8 @@ export default function HomePage() {
   return (
     <div style={{ backgroundColor: '#F5F4F0' }}>
       <style>{`
+        .cat-pill { padding: 0.5rem 1.25rem; background-color: transparent; border: 1px solid rgba(13,13,13,0.2); color: #0D0D0D; font-size: 0.75rem; font-weight: 600; border-radius: 2px; text-transform: uppercase; letter-spacing: 0.08em; transition: border-color 0.2s; }
+        .cat-pill:hover { border-color: #0D0D0D; }
         .cat-tile { background: #E8E5DF; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; aspect-ratio: 3/4; padding: 1.5rem; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s; border: 1px solid rgba(184,136,44,0.1); border-radius: 4px; }
         .cat-tile:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -10px rgba(13,13,13,0.1); }
         .cat-tile::after { content: ''; position: absolute; bottom: 0; left: 0; height: 3px; width: 0; background-color: #B8882C; transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1); }

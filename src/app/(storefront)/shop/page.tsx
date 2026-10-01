@@ -13,6 +13,10 @@ export default async function ShopPage() {
 
   return (
     <div style={{ backgroundColor: '#F5F4F0', minHeight: '100vh', paddingTop: '100px', paddingBottom: '100px' }}>
+      <style>{`
+        .cat-pill { padding: 0.5rem 1.25rem; background-color: transparent; border: 1px solid rgba(13,13,13,0.2); color: #0D0D0D; font-size: 0.75rem; font-weight: 600; border-radius: 2px; text-transform: uppercase; letter-spacing: 0.08em; transition: border-color 0.2s; }
+        .cat-pill:hover { border-color: #0D0D0D; }
+      `}</style>
       
       {/* ── HEADER ────────────────────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-5 sm:px-8 mb-12">
@@ -40,9 +44,7 @@ export default async function ShopPage() {
               <Link 
                 key={cat.id} 
                 href={`/shop/category/${cat.slug}`}
-                style={{ padding: '0.5rem 1.25rem', backgroundColor: 'transparent', border: '1px solid rgba(13,13,13,0.2)', color: '#0D0D0D', fontSize: '0.75rem', fontWeight: 600, borderRadius: '2px', textTransform: 'uppercase', letterSpacing: '0.08em', transition: 'border-color 0.2s' }}
-                onMouseEnter={e => e.currentTarget.style.borderColor = '#0D0D0D'}
-                onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(13,13,13,0.2)'}
+                className="cat-pill"
               >
                 {cat.name}
               </Link>
