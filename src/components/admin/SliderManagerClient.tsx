@@ -2,7 +2,8 @@
 
 import { useState } from 'react'
 import { Plus, X, Video, Image as ImageIcon, Loader2, Trash2 } from 'lucide-react'
-import { saveMediaSliders, uploadSliderFiles } from '@/app/admin/media-sliders/actions'
+import { saveMediaSliders, getSignedUploadUrls } from '@/app/admin/media-sliders/actions'
+import { createClient } from '@/lib/supabase/client'
 
 export function SliderManagerClient({ initialSliders, categories }: { initialSliders: any[], categories: any[] }) {
   const [sliders, setSliders] = useState<any[]>(initialSliders)
@@ -25,16 +26,27 @@ export function SliderManagerClient({ initialSliders, categories }: { initialSli
     try {
       let newMedia: any[] = []
       if (selectedFiles.length > 0) {
-        const formData = new FormData()
-        selectedFiles.forEach(f => formData.append('files', f))
+        // Bypass Vercel 4.5MB limit by getting signed URLs
+        const filesInfo = selectedFiles.map(f => ({ name: f.name, type: f.type }))
+        const urlResult = await getSignedUploadUrls(filesInfo)
         
-        const uploadResult = await uploadSliderFiles(formData)
-        if (!uploadResult.success) {
-          alert('Upload failed: ' + uploadResult.error)
+        if (!urlResult.success || !urlResult.urls) {
+          alert('Upload failed: ' + urlResult.error)
           setIsSubmitting(false)
           return
         }
-        newMedia = uploadResult.urls!
+        
+        // Upload directly from browser to Supabase Storage
+        const supabase = createClient()
+        for (let i = 0; i < selectedFiles.length; i++) {
+          const file = selectedFiles[i]
+          const { path, token, publicUrl, isVideo } = urlResult.urls[i]
+          
+          const { error } = await supabase.storage.from('hero-slides').uploadToSignedUrl(path, token, file)
+          if (error) throw new Error(`Failed to upload ${file.name}: ${error.message}`)
+          
+          newMedia.push({ url: publicUrl, isVideo })
+        }
       }
 
       const newSlider = {

@@ -37,40 +37,35 @@ export async function saveMediaSliders(sliders: any) {
   }
 }
 
-export async function uploadSliderFiles(formData: FormData) {
+export async function getSignedUploadUrls(filesInfo: { name: string, type: string }[]) {
   try {
     const supabase = await createAdminClient()
-    const files = formData.getAll('files') as File[]
-    const urls: { url: string, isVideo: boolean }[] = []
-
-    for (const file of files) {
-      if (!(file instanceof File)) continue
-      
+    const results = []
+    
+    for (const file of filesInfo) {
       const fileExt = file.name.split('.').pop()
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`
       
-      const arrayBuffer = await file.arrayBuffer()
-      const buffer = Buffer.from(arrayBuffer)
-      
-      const { error } = await supabase.storage.from('hero-slides').upload(fileName, buffer, {
-        contentType: file.type,
-      })
+      const { data, error } = await supabase.storage.from('hero-slides').createSignedUploadUrl(fileName)
       
       if (error) {
-        console.error('Supabase upload error:', error)
+        console.error('Signed URL error:', error)
         throw new Error(error.message)
       }
       
       const { data: { publicUrl } } = supabase.storage.from('hero-slides').getPublicUrl(fileName)
-      urls.push({ 
-        url: publicUrl, 
-        isVideo: file.type.startsWith('video/') || file.name.endsWith('.mp4') 
+      
+      results.push({
+        token: data.token,
+        path: data.path,
+        publicUrl,
+        isVideo: file.type.startsWith('video/') || file.name.endsWith('.mp4')
       })
     }
     
-    return { success: true, urls }
+    return { success: true, urls: results }
   } catch (err: any) {
-    console.error('Upload catch error:', err)
-    return { success: false, error: err.message }
+    console.error('Signed URL catch error:', err)
+    return { success: false, error: err.message || 'Unknown error' }
   }
 }
