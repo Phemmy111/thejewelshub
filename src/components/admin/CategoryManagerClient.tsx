@@ -59,9 +59,9 @@ export default function CategoryManagerClient({ initialCategories }: { initialCa
       } else {
         // Optimistic UI update
         if (editingCategory) {
-          setCategories(categories.map(c => c.id === editingCategory.id ? res.data[0] : c))
+          setCategories(categories.map(c => c.id === editingCategory.id ? res.data?.[0] : c))
         } else {
-          setCategories([res.data[0], ...categories])
+          setCategories([res.data?.[0], ...categories])
         }
         handleCloseModal()
       }
