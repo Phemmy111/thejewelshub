@@ -37,7 +37,7 @@ export default async function AdminLayout({
             { href: '/admin/products', label: '💎 Products' },
             { href: '/admin/categories', label: '🗂 Categories' },
             { href: '/admin/orders', label: '📦 Orders' },
-            { href: '/admin/hero', label: '🖼 Hero Slider' },
+            { href: '/admin/media-sliders', label: '🖼 Media Sliders' },
             { href: '/admin/customers', label: '👤 Customers' },
             { href: '/admin/reviews', label: '⭐ Reviews' },
             { href: '/admin/discounts', label: '🏷 Discounts' },
