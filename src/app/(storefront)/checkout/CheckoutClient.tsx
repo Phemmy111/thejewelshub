@@ -133,15 +133,15 @@ export default function CheckoutClient() {
           Checkout
         </h1>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,420px)', gap: '3rem', alignItems: 'start' }}>
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start">
 
           {/* ── LEFT: Customer form ──────────────────────────────────────── */}
-          <form onSubmit={handlePay}>
+          <form onSubmit={handlePay} className="w-full flex-1">
 
             {/* Contact */}
             <section style={{ background: '#fff', borderRadius: '4px', padding: '28px', marginBottom: '20px', border: '1px solid #E8E5DF' }}>
               <h2 style={{ fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#B8882C', marginBottom: '20px' }}>Contact Information</h2>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#7A7069', marginBottom: '6px' }}>Full Name *</label>
                   <input required value={name} onChange={e => setName(e.target.value)} placeholder="Amaka Johnson" className={inputCls} />
@@ -150,7 +150,7 @@ export default function CheckoutClient() {
                   <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#7A7069', marginBottom: '6px' }}>Email *</label>
                   <input required type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="amaka@email.com" className={inputCls} />
                 </div>
-                <div style={{ gridColumn: '1 / -1' }}>
+                <div className="md:col-span-2">
                   <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#7A7069', marginBottom: '6px' }}>Phone Number *</label>
                   <input required type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="+234 800 000 0000" className={inputCls} />
                 </div>
@@ -225,7 +225,7 @@ export default function CheckoutClient() {
           </form>
 
           {/* ── RIGHT: Order summary ─────────────────────────────────────── */}
-          <div style={{ position: 'sticky', top: '100px' }}>
+          <div className="w-full lg:w-[420px] lg:shrink-0 lg:sticky lg:top-[100px]">
             <div style={{ background: '#fff', borderRadius: '4px', padding: '28px', border: '1px solid #E8E5DF' }}>
               <h2 style={{ fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#B8882C', marginBottom: '20px' }}>Order Summary</h2>
 
