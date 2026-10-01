@@ -8,6 +8,8 @@ export interface CartItem {
   priceKobo: number
   quantity: number
   image?: string
+  size?: string
+  color?: string
 }
 
 interface CartStore {
@@ -27,30 +29,38 @@ export const useCartStore = create<CartStore>()(
       isOpen: false,
       addItem: (item) => {
         const currentItems = get().items
-        const existingItem = currentItems.find(i => i.productId === item.productId)
-        
+        // Match on productId + size + color so each variant is a separate line item
+        const existingItem = currentItems.find(
+          i =>
+            i.productId === item.productId &&
+            (i.size ?? '') === (item.size ?? '') &&
+            (i.color ?? '') === (item.color ?? ''),
+        )
+
         if (existingItem) {
-          set({ 
-            items: currentItems.map(i => i.productId === item.productId ? { ...i, quantity: i.quantity + item.quantity } : i),
-            isOpen: true
+          set({
+            items: currentItems.map(i =>
+              i.id === existingItem.id
+                ? { ...i, quantity: i.quantity + (item.quantity ?? 1) }
+                : i,
+            ),
+            isOpen: true,
           })
         } else {
-          set({ 
+          set({
             items: [...currentItems, { ...item, id: crypto.randomUUID() }],
-            isOpen: true
+            isOpen: true,
           })
         }
       },
       removeItem: (id) => set({ items: get().items.filter(i => i.id !== id) }),
       updateQuantity: (id, quantity) => {
         if (quantity < 1) return
-        set({ items: get().items.map(i => i.id === id ? { ...i, quantity } : i) })
+        set({ items: get().items.map(i => (i.id === id ? { ...i, quantity } : i)) })
       },
       setIsOpen: (isOpen) => set({ isOpen }),
-      clearCart: () => set({ items: [] })
+      clearCart: () => set({ items: [], isOpen: false }),
     }),
-    { 
-      name: 'thejewelshub-cart'
-    }
-  )
+    { name: 'thejewelshub-cart' },
+  ),
 )

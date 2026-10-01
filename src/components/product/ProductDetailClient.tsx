@@ -9,6 +9,7 @@ import { ChevronLeft, ChevronRight, ShoppingBag, Play } from 'lucide-react'
 export default function ProductDetailClient({ product, relatedProducts }: { product: any, relatedProducts: any[] }) {
   const { addItem } = useCartStore()
   const [selectedSize, setSelectedSize] = useState<string | null>(null)
+  const [selectedColor, setSelectedColor] = useState<{name: string, hex: string} | null>(null)
   const [addedToCart, setAddedToCart] = useState(false)
   const [activeMediaIdx, setActiveMediaIdx] = useState(0)
 
@@ -22,6 +23,7 @@ export default function ProductDetailClient({ product, relatedProducts }: { prod
 
   const refMedia: any[] = product.reference_media || []
   const sizes: string[] = product.sizes || []
+  const colors: {name: string, hex: string}[] = product.colors || []
 
   // All displayable media: product images first, then reference media
   const allMedia = [
@@ -34,19 +36,25 @@ export default function ProductDetailClient({ product, relatedProducts }: { prod
       alert('Please select a size first')
       return
     }
+    if (colors.length > 0 && !selectedColor) {
+      alert('Please select a colour first')
+      return
+    }
     addItem({
       productId: product.id,
-      name: product.name + (selectedSize ? ' — ' + selectedSize : ''),
+      name: product.name,
       priceKobo: product.price_kobo,
       quantity: 1,
-      image: images[0]?.url
+      image: images[0]?.url,
+      size: selectedSize || undefined,
+      color: selectedColor?.name || undefined
     })
     setAddedToCart(true)
     setTimeout(() => setAddedToCart(false), 2500)
   }
 
   const whatsapp = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '2349133115713'
-  const waMsg = encodeURIComponent('Hi! I am interested in: ' + product.name + (selectedSize ? ' (Size: ' + selectedSize + ')' : '') + '\n\nLink: ' + (typeof window !== 'undefined' ? window.location.href : ''))
+  const waMsg = encodeURIComponent('Hi! I am interested in: ' + product.name + (selectedSize ? ' (Size: ' + selectedSize + ')' : '') + (selectedColor ? ' (Colour: ' + selectedColor.name + ')' : '') + '\n\nLink: ' + (typeof window !== 'undefined' ? window.location.href : ''))
 
   return (
     <div>
@@ -229,6 +237,39 @@ export default function ProductDetailClient({ product, relatedProducts }: { prod
                       {size}
                     </button>
                   ))}
+                </div>
+              </div>
+            )}
+
+            {/* Colours */}
+            {colors.length > 0 && (
+              <div style={{ marginBottom: '2rem' }}>
+                <p style={{ fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.18em', color: '#0D0D0D', marginBottom: '0.875rem' }}>
+                  Colour
+                  {selectedColor && <span style={{ fontWeight: 400, color: '#B8882C', textTransform: 'none', letterSpacing: 0, marginLeft: '0.5rem' }}>— {selectedColor.name}</span>}
+                </p>
+                <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+                  {colors.map((c, i) => {
+                    const isSelected = selectedColor?.hex === c.hex
+                    return (
+                      <button
+                        key={i}
+                        title={c.name}
+                        onClick={() => setSelectedColor(isSelected ? null : c)}
+                        style={{
+                          width: '32px',
+                          height: '32px',
+                          borderRadius: '50%',
+                          backgroundColor: c.hex,
+                          border: isSelected ? '2px solid #B8882C' : '2px solid rgba(13,13,13,0.15)',
+                          cursor: 'pointer',
+                          outline: 'none',
+                          boxShadow: isSelected ? '0 0 0 2px rgba(184,136,44,0.3)' : 'none',
+                          transition: 'border-color 0.2s, box-shadow 0.2s',
+                        }}
+                      />
+                    )
+                  })}
                 </div>
               </div>
             )}

@@ -1,6 +1,6 @@
 'use client'
 
-import { useCartStore } from '@/store/cart'
+import { useCartStore, CartItem } from '@/store/cart'
 import { X, Minus, Plus, ShoppingBag } from 'lucide-react'
 import { formatPrice } from '@/lib/utils'
 import Link from 'next/link'
@@ -10,104 +10,178 @@ export function CartDrawer() {
   const { items, isOpen, setIsOpen, removeItem, updateQuantity } = useCartStore()
   const [mounted, setMounted] = useState(false)
 
-  // Prevent hydration mismatch for persisted store
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
+  useEffect(() => { setMounted(true) }, [])
   if (!mounted) return null
 
-  const subtotal = items.reduce((total, item) => total + (item.priceKobo * item.quantity), 0)
+  const subtotal = items.reduce((total: number, item: CartItem) => total + item.priceKobo * item.quantity, 0)
+  const itemCount = items.reduce((total: number, item: CartItem) => total + item.quantity, 0)
 
   return (
     <>
       {/* Backdrop */}
       {isOpen && (
-        <div 
-          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 transition-opacity"
+        <div
+          style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(4px)', zIndex: 50 }}
           onClick={() => setIsOpen(false)}
         />
       )}
 
       {/* Drawer */}
-      <div 
-        className="fixed top-0 right-0 h-full w-full sm:w-[400px] bg-[#F5F4F0] z-50 shadow-2xl flex flex-col transition-transform duration-300 ease-in-out"
-        style={{ transform: isOpen ? 'translateX(0)' : 'translateX(100%)' }}
+      <div
+        style={{
+          position: 'fixed',
+          top: 0,
+          right: 0,
+          height: '100%',
+          width: '100%',
+          maxWidth: '420px',
+          backgroundColor: '#F5F4F0',
+          zIndex: 51,
+          display: 'flex',
+          flexDirection: 'column',
+          boxShadow: '-4px 0 40px rgba(0,0,0,0.15)',
+          transform: isOpen ? 'translateX(0)' : 'translateX(100%)',
+          transition: 'transform 0.35s cubic-bezier(0.22,1,0.36,1)',
+        }}
       >
-        <div className="flex items-center justify-between p-6 border-b border-black/10">
-          <h2 className="font-display font-bold text-xl text-[#0D0D0D]">Your Cart</h2>
-          <button 
+        {/* Header */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 24px', borderBottom: '1px solid rgba(13,13,13,0.08)', backgroundColor: '#fff' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <ShoppingBag size={18} style={{ color: '#B8882C' }} />
+            <h2 className="font-display font-bold" style={{ fontSize: '1.1rem', color: '#0D0D0D', margin: 0 }}>
+              Your Cart
+            </h2>
+            {itemCount > 0 && (
+              <span style={{ backgroundColor: '#B8882C', color: '#fff', borderRadius: '20px', padding: '1px 8px', fontSize: '0.7rem', fontWeight: 700 }}>
+                {itemCount}
+              </span>
+            )}
+          </div>
+          <button
             onClick={() => setIsOpen(false)}
-            className="p-2 hover:bg-black/5 rounded-full transition-colors"
+            style={{ padding: '6px', borderRadius: '50%', border: 'none', background: 'transparent', cursor: 'pointer', display: 'flex', alignItems: 'center', color: '#7A7069' }}
           >
             <X size={20} />
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-6">
+        {/* Items */}
+        <div style={{ flex: 1, overflowY: 'auto', padding: '20px 24px' }}>
           {items.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full text-[#7A7069] gap-4">
-              <ShoppingBag size={48} strokeWidth={1} opacity={0.5} />
-              <p>Your cart is empty.</p>
-              <button 
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: '16px', paddingBottom: '80px' }}>
+              <ShoppingBag size={52} strokeWidth={1} style={{ color: '#C4BCB4' }} />
+              <p style={{ color: '#7A7069', fontSize: '0.9rem', margin: 0 }}>Your cart is empty.</p>
+              <button
                 onClick={() => setIsOpen(false)}
-                className="mt-4 px-6 py-2 border border-[#B8882C] text-[#B8882C] text-sm font-semibold uppercase tracking-wider hover:bg-[#B8882C] hover:text-white transition-colors"
+                style={{ marginTop: '8px', padding: '10px 24px', border: '1px solid #B8882C', color: '#B8882C', backgroundColor: 'transparent', fontWeight: 600, fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', transition: 'all 0.2s' }}
               >
                 Continue Shopping
               </button>
             </div>
           ) : (
-            items.map(item => (
-              <div key={item.id} className="flex gap-4">
-                <div className="w-20 h-24 bg-[#E8E5DF] flex-shrink-0 flex items-center justify-center">
-                  <span className="text-[10px] text-black/30 uppercase">No Img</span>
-                </div>
-                <div className="flex-1 flex flex-col justify-between py-1">
-                  <div>
-                    <div className="flex justify-between items-start gap-2">
-                      <h3 className="font-bold text-[#0D0D0D] text-sm leading-tight">{item.name}</h3>
-                      <button onClick={() => removeItem(item.id)} className="text-black/40 hover:text-red-500 transition-colors">
-                        <X size={16} />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              {items.map((item: CartItem) => (
+                <div key={item.id} style={{ display: 'flex', gap: '14px', backgroundColor: '#fff', padding: '14px', borderRadius: '4px', border: '1px solid rgba(13,13,13,0.06)' }}>
+
+                  {/* Thumb */}
+                  <div style={{ width: '70px', height: '84px', backgroundColor: '#E8E5DF', flexShrink: 0, borderRadius: '2px', overflow: 'hidden' }}>
+                    {item.image ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={item.image} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    ) : null}
+                  </div>
+
+                  {/* Info */}
+                  <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px' }}>
+                      <div style={{ minWidth: 0 }}>
+                        <h3 style={{ fontWeight: 700, fontSize: '0.85rem', color: '#0D0D0D', margin: '0 0 3px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          {item.name}
+                        </h3>
+                        {/* Variant chips */}
+                        <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap' }}>
+                          {item.size && (
+                            <span style={{ fontSize: '0.65rem', fontWeight: 600, padding: '1px 7px', backgroundColor: 'rgba(184,136,44,0.1)', color: '#8C6518', borderRadius: '20px', border: '1px solid rgba(184,136,44,0.2)' }}>
+                              {item.size}
+                            </span>
+                          )}
+                          {item.color && (
+                            <span style={{ fontSize: '0.65rem', fontWeight: 600, padding: '1px 7px', backgroundColor: 'rgba(13,13,13,0.06)', color: '#0D0D0D', borderRadius: '20px', border: '1px solid rgba(13,13,13,0.1)' }}>
+                              {item.color}
+                            </span>
+                          )}
+                        </div>
+                        <p style={{ color: '#B8882C', fontWeight: 700, fontSize: '0.9rem', margin: '6px 0 0' }}>
+                          {formatPrice(item.priceKobo)}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => removeItem(item.id)}
+                        style={{ padding: '3px', border: 'none', background: 'transparent', cursor: 'pointer', color: '#C4BCB4', flexShrink: 0 }}
+                      >
+                        <X size={15} />
                       </button>
                     </div>
-                    <p className="text-[#B8882C] font-semibold text-sm mt-1">{formatPrice(item.priceKobo)}</p>
-                  </div>
-                  <div className="flex items-center gap-3 border border-black/10 w-fit rounded-sm">
-                    <button 
-                      className="p-1.5 hover:bg-black/5 transition-colors disabled:opacity-50"
-                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                      disabled={item.quantity <= 1}
-                    >
-                      <Minus size={14} />
-                    </button>
-                    <span className="text-sm font-semibold w-4 text-center">{item.quantity}</span>
-                    <button 
-                      className="p-1.5 hover:bg-black/5 transition-colors"
-                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                    >
-                      <Plus size={14} />
-                    </button>
+
+                    {/* Qty stepper */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0', border: '1px solid rgba(13,13,13,0.12)', borderRadius: '2px', width: 'fit-content', marginTop: '8px' }}>
+                      <button
+                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                        disabled={item.quantity <= 1}
+                        style={{ padding: '5px 9px', border: 'none', background: 'transparent', cursor: item.quantity <= 1 ? 'not-allowed' : 'pointer', opacity: item.quantity <= 1 ? 0.3 : 1 }}
+                      >
+                        <Minus size={12} />
+                      </button>
+                      <span style={{ fontSize: '0.8rem', fontWeight: 700, width: '24px', textAlign: 'center', color: '#0D0D0D' }}>{item.quantity}</span>
+                      <button
+                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                        style={{ padding: '5px 9px', border: 'none', background: 'transparent', cursor: 'pointer' }}
+                      >
+                        <Plus size={12} />
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
+              ))}
+            </div>
           )}
         </div>
 
+        {/* Footer */}
         {items.length > 0 && (
-          <div className="border-t border-black/10 p-6 bg-white">
-            <div className="flex justify-between items-center mb-6 text-[#0D0D0D]">
-              <span className="font-semibold text-sm uppercase tracking-wider">Subtotal</span>
-              <span className="font-bold text-lg">{formatPrice(subtotal)}</span>
+          <div style={{ borderTop: '1px solid rgba(13,13,13,0.08)', padding: '20px 24px', backgroundColor: '#fff' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+              <span style={{ fontWeight: 600, fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#7A7069' }}>Subtotal</span>
+              <span style={{ fontWeight: 800, fontSize: '1.2rem', color: '#0D0D0D' }}>{formatPrice(subtotal)}</span>
             </div>
-            <p className="text-xs text-[#7A7069] mb-4 text-center">Shipping & taxes calculated at checkout.</p>
-            <Link 
+            <p style={{ fontSize: '0.7rem', color: '#7A7069', textAlign: 'center', margin: '0 0 14px' }}>
+              Delivery fee confirmed after order.
+            </p>
+            <Link
               href="/checkout"
               onClick={() => setIsOpen(false)}
-              className="flex justify-center items-center w-full bg-[#B8882C] hover:bg-[#D4A84B] text-white py-4 font-bold text-sm uppercase tracking-widest transition-colors"
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '100%',
+                padding: '1rem',
+                backgroundColor: '#B8882C',
+                color: '#fff',
+                fontWeight: 700,
+                fontSize: '0.8rem',
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
+                textDecoration: 'none',
+                borderRadius: '2px',
+                transition: 'background-color 0.2s',
+              }}
             >
-              Checkout Securely
+              Checkout Securely — {formatPrice(subtotal)}
             </Link>
+            <p style={{ textAlign: 'center', fontSize: '0.65rem', color: '#7A7069', marginTop: '10px' }}>
+              Secured by Paystack
+            </p>
           </div>
         )}
       </div>
