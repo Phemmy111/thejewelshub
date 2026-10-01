@@ -189,78 +189,78 @@ export default function ProductManagerClient({ initialProducts, categories }: { 
     <div className="max-w-6xl mx-auto">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-display font-bold text-white mb-2">Products &amp; Inventory</h1>
-          <p style={{ color: '#A19D98' }} className="text-sm">Manage your catalog, stock, and pricing.</p>
+          <h1 className="text-3xl font-display font-bold text-[#0D0D0D] mb-2">Products &amp; Inventory</h1>
+          <p style={{ color: '#7A7069' }} className="text-sm">Manage your catalog, stock, and pricing.</p>
         </div>
         <button
           onClick={handleOpenNew}
-          style={{ backgroundColor: '#B8882C' }}
-          className="hover:opacity-90 text-white px-5 py-2.5 rounded text-sm font-semibold flex items-center gap-2 transition-opacity"
+          style={{ backgroundColor: '#0D0D0D' }}
+          className="hover:bg-[#1A1A1A] text-white px-5 py-2.5 rounded text-sm font-semibold flex items-center gap-2 transition-colors"
         >
           <Plus size={16} /> New Product
         </button>
       </div>
 
       {/* Table */}
-      <div className="bg-[#1A1A1A] rounded-xl border border-white/5 overflow-hidden">
-        <div className="p-4 border-b border-white/5 flex items-center justify-between">
+      <div className="bg-white rounded-xl border border-[rgba(13,13,13,0.1)] overflow-hidden shadow-sm">
+        <div className="p-4 border-b border-[rgba(13,13,13,0.1)] flex items-center justify-between bg-white">
           <div className="relative w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" size={16} />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#A19D98]" size={16} />
             <input
               type="text"
               placeholder="Search products..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 rounded-md py-2 pl-9 pr-3 text-sm text-white focus:outline-none"
+              className="w-full bg-[#F5F4F0] border border-[rgba(13,13,13,0.1)] rounded-md py-2 pl-9 pr-3 text-sm text-[#0D0D0D] focus:outline-none focus:bg-white"
               style={{ outlineColor: '#B8882C' }}
             />
           </div>
-          <div className="text-white/50 text-sm">{products.length} Products</div>
+          <div className="text-[#7A7069] text-sm font-medium">{products.length} Products</div>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-white/80">
-            <thead className="text-xs uppercase bg-white/5 text-white/50">
+          <table className="w-full text-left text-sm text-[#0D0D0D]">
+            <thead className="text-xs uppercase bg-[#F9F8F6] text-[#7A7069] border-b border-[rgba(13,13,13,0.1)]">
               <tr>
-                <th className="px-6 py-4 font-medium">Product</th>
-                <th className="px-6 py-4 font-medium">Category</th>
-                <th className="px-6 py-4 font-medium">Price</th>
-                <th className="px-6 py-4 font-medium">Stock</th>
-                <th className="px-6 py-4 font-medium">Status</th>
-                <th className="px-6 py-4 font-medium text-right">Actions</th>
+                <th className="px-6 py-4 font-semibold tracking-wider">Product</th>
+                <th className="px-6 py-4 font-semibold tracking-wider">Category</th>
+                <th className="px-6 py-4 font-semibold tracking-wider">Price</th>
+                <th className="px-6 py-4 font-semibold tracking-wider">Stock</th>
+                <th className="px-6 py-4 font-semibold tracking-wider">Status</th>
+                <th className="px-6 py-4 font-semibold tracking-wider text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5">
+            <tbody className="divide-y divide-[rgba(13,13,13,0.08)] bg-white">
               {filteredProducts.map(product => {
                 const primaryImage = product.product_images?.find((img: any) => img.is_primary) || product.product_images?.[0]
                 return (
-                  <tr key={product.id} className="hover:bg-white/[0.02] transition-colors">
+                  <tr key={product.id} className="hover:bg-[#F9F8F6] transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded border border-white/10 flex items-center justify-center overflow-hidden flex-shrink-0" style={{ backgroundColor: 'rgba(0,0,0,0.4)' }}>
+                        <div className="w-10 h-10 rounded border border-[rgba(13,13,13,0.1)] flex items-center justify-center overflow-hidden flex-shrink-0 bg-[#E8E5DF]">
                           {primaryImage ? (
                             // eslint-disable-next-line @next/next/no-img-element
                             <img src={primaryImage.url} alt={product.name} className="w-full h-full object-cover" />
                           ) : (
-                            <Package size={16} className="text-white/30" />
+                            <Package size={16} className="text-[#A19D98]" />
                           )}
                         </div>
                         <div>
-                          <div className="font-semibold text-white">{product.name}</div>
-                          <div className="text-xs text-white/40 font-mono mt-0.5">{product.slug}</div>
+                          <div className="font-bold text-[#0D0D0D]">{product.name}</div>
+                          <div className="text-xs text-[#7A7069] font-mono mt-0.5">{product.slug}</div>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="bg-white/10 px-2.5 py-1 rounded-full text-xs font-medium">
+                      <span className="bg-[#E8E5DF] text-[#0D0D0D] px-2.5 py-1 rounded-full text-xs font-semibold">
                         {product.categories?.name || 'Uncategorized'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 font-mono font-medium" style={{ color: '#B8882C' }}>
+                    <td className="px-6 py-4 font-mono font-bold" style={{ color: '#0D0D0D' }}>
                       {formatPrice(product.price_kobo)}
                     </td>
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 font-medium">
                         <div
                           className="w-2 h-2 rounded-full"
                           style={{ backgroundColor: stockColor(product.stock_quantity) }}
@@ -270,16 +270,16 @@ export default function ProductManagerClient({ initialProducts, categories }: { 
                     </td>
                     <td className="px-6 py-4">
                       {product.is_active ? (
-                        <span className="text-xs font-semibold" style={{ color: '#4ade80' }}>Active</span>
+                        <span className="text-xs font-bold" style={{ color: '#059669' }}>Active</span>
                       ) : (
-                        <span className="text-xs font-semibold" style={{ color: '#f87171' }}>Draft</span>
+                        <span className="text-xs font-bold" style={{ color: '#dc2626' }}>Draft</span>
                       )}
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <button onClick={() => handleOpenEdit(product)} className="p-2 hover:bg-white/10 rounded text-white/60 hover:text-white transition-colors mr-2">
+                      <button onClick={() => handleOpenEdit(product)} className="p-2 hover:bg-[#E8E5DF] rounded text-[#7A7069] hover:text-[#0D0D0D] transition-colors mr-2">
                         <Edit size={16} />
                       </button>
-                      <button onClick={() => handleDelete(product.id)} className="p-2 rounded transition-colors" style={{ color: '#f87171' }}>
+                      <button onClick={() => handleDelete(product.id)} className="p-2 hover:bg-[#fee2e2] rounded transition-colors" style={{ color: '#ef4444' }}>
                         <Trash2 size={16} />
                       </button>
                     </td>
@@ -288,7 +288,7 @@ export default function ProductManagerClient({ initialProducts, categories }: { 
               })}
               {filteredProducts.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-white/40">
+                  <td colSpan={6} className="px-6 py-12 text-center text-[#7A7069] font-medium">
                     No products found. Click &quot;New Product&quot; to add one.
                   </td>
                 </tr>
