@@ -2,7 +2,6 @@
 
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
-import { Resend } from 'resend'
 import { formatPrice } from '@/lib/utils'
 
 // ─── Supabase (service role for trusted writes) ───────────────────────────────
@@ -107,9 +106,16 @@ export async function verifyAndSaveOrder(payload: CheckoutPayload): Promise<{
 
 // ─── Email sender ─────────────────────────────────────────────────────────────
 async function sendOrderEmails(payload: CheckoutPayload, orderId: string) {
-  const resend = new Resend(process.env.RESEND_API_KEY)
-  const adminEmail = process.env.ADMIN_NOTIFY_EMAIL || 'olaniyisuccessoluwatobi@gmail.com'
-  const fromEmail = process.env.EMAIL_FROM || "The Jeweller's Hub <orders@thejewelshub.com>"
+  const nodemailer = await import('nodemailer')
+  const adminEmails = ['olaniyisuccessoluwatobi@gmail.com', 'femiadeleke2020@gmail.com']
+
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'thejewelershub@gmail.com',
+      pass: process.env.GMAIL_APP_PASSWORD || ''
+    }
+  })
 
   const itemRows = payload.items
     .map(item => {
@@ -183,15 +189,15 @@ async function sendOrderEmails(payload: CheckoutPayload, orderId: string) {
     '</div>'
 
   await Promise.all([
-    resend.emails.send({
-      from: fromEmail,
+    transporter.sendMail({
+      from: '"The Jeweller\'s Hub" <thejewelershub@gmail.com>',
       to: payload.customerEmail,
       subject: 'Your order is confirmed — The Jeweller\'s Hub',
       html: customerHtml,
     }),
-    resend.emails.send({
-      from: fromEmail,
-      to: [adminEmail, 'femiadeleke2020@gmail.com'],
+    transporter.sendMail({
+      from: '"The Jeweller\'s Hub" <thejewelershub@gmail.com>',
+      to: adminEmails,
       subject: 'New order: ' + formatPrice(payload.totalKobo) + ' from ' + payload.customerName,
       html: adminHtml,
     }),
