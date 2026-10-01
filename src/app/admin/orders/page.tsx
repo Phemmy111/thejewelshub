@@ -2,6 +2,7 @@ import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { formatPrice } from '@/lib/utils'
 import { Search, Eye } from 'lucide-react'
+import { StatusSelect } from './StatusSelect'
 
 // Revalidate this page every 0 seconds (always fresh)
 export const revalidate = 0
@@ -77,12 +78,7 @@ export default async function OrdersPage() {
                       <div className="text-xs text-[#7A7069]">{order.customer_phone}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
-                        order.status === 'paid' ? 'bg-green-50 text-green-700 border-green-200' : 
-                        'bg-yellow-50 text-yellow-700 border-yellow-200'
-                      }`}>
-                        {order.status.toUpperCase()}
-                      </span>
+                      <StatusSelect orderId={order.id} currentStatus={order.status} />
                     </td>
                     <td className="px-6 py-4">
                       <div className="text-sm text-[#7A7069] max-w-[250px] truncate">

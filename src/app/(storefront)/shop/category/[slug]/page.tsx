@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { formatPrice } from '@/lib/utils'
 import { notFound } from 'next/navigation'
 import HeroSlider from '@/components/hero/HeroSlider'
+import { ProductCardActions } from '@/components/product/ProductCardActions'
 
 export const revalidate = 60
 
@@ -286,6 +287,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
                       overflow: 'hidden',
                     }}
                   >
+                    <ProductCardActions product={product} />
                     {(() => {
                       const img =
                         product.product_images?.find((x: any) => x.is_primary) ||

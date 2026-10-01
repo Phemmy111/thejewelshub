@@ -3,6 +3,7 @@ import { Reveal } from '@/components/ui/Reveal'
 import Link from 'next/link'
 import { formatPrice } from '@/lib/utils'
 import HeroSlider from '@/components/hero/HeroSlider'
+import { ProductCardActions } from '@/components/product/ProductCardActions'
 
 export const revalidate = 60 // Revalidate every minute
 
@@ -84,6 +85,7 @@ export default async function ShopPage() {
                   className="group"
                 >
                   <div style={{ position: 'relative', width: '100%', aspectRatio: '3/4', backgroundColor: '#E8E5DF', overflow: 'hidden' }}>
+                    <ProductCardActions product={product} />
                     {(() => {
                       const img = product.product_images?.find((x: any) => x.is_primary) || product.product_images?.[0]
                       return img ? (
