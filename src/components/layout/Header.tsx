@@ -8,9 +8,9 @@ import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 
 const navLinks = [
   { href: '/shop', label: 'Shop All' },
-  { href: '/accessories', label: 'Accessories' },
-  { href: '/jewels', label: 'Jewels' },
-  { href: '/new-arrivals', label: 'New Arrivals' },
+  { href: '/shop/category/accessories', label: 'Accessories' },
+  { href: '/shop/category/jewels', label: 'Jewels' },
+  { href: '/shop', label: 'New Arrivals' },
 ]
 
 export default function Header() {

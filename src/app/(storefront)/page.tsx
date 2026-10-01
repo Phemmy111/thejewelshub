@@ -55,10 +55,10 @@ export default function HomePage() {
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
-            { label: 'Jewels', sub: 'Rings · Necklaces · Sets', href: '/jewels' },
-            { label: 'Earrings', sub: 'Studs · Drops · Hoops', href: '/jewels/earrings' },
-            { label: 'Accessories', sub: 'Watches · Sunglasses', href: '/accessories' },
-            { label: 'Bracelets', sub: 'Bangles · Chains', href: '/jewels/bracelets' },
+            { label: 'Jewels', sub: 'Rings · Necklaces · Sets', href: '/shop/category/jewels' },
+            { label: 'Earrings', sub: 'Studs · Drops · Hoops', href: '/shop/category/earrings' },
+            { label: 'Accessories', sub: 'Watches · Sunglasses', href: '/shop/category/accessories' },
+            { label: 'Bracelets', sub: 'Bangles · Chains', href: '/shop/category/bracelets' },
           ].map((cat, i) => (
             <Reveal key={cat.label} delay={i * 0.1}>
               <Link href={cat.href} className="cat-tile">

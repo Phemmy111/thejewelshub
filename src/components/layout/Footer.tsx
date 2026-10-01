@@ -4,9 +4,9 @@ import Link from 'next/link'
 const footerLinks = {
   Shop: [
     { href: '/shop', label: 'All Products' },
-    { href: '/accessories', label: 'Accessories' },
-    { href: '/jewels', label: 'Jewels' },
-    { href: '/new-arrivals', label: 'New Arrivals' },
+    { href: '/shop/category/accessories', label: 'Accessories' },
+    { href: '/shop/category/jewels', label: 'Jewels' },
+    { href: '/shop', label: 'New Arrivals' },
   ],
   Help: [
     { href: '/delivery', label: 'Delivery & Returns' },
