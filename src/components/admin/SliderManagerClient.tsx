@@ -9,14 +9,15 @@ export function SliderManagerClient({ initialSliders, categories }: { initialSli
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   
-  const [targetPage, setTargetPage] = useState('homepage')
+  const [targetPage, setTargetPage] = useState('/')
   const [transition, setTransition] = useState('fade')
   const [duration, setDuration] = useState('5000')
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])
 
   const targetOptions = [
-    { value: 'homepage', label: 'Homepage Hero' },
-    ...categories.map(c => ({ value: `category_${c.slug}`, label: `Category: ${c.name}` }))
+    { value: '/', label: 'Homepage Background Slider (/)' },
+    { value: '/shop', label: 'Shop All Background Slider (/shop)' },
+    ...categories.map(c => ({ value: `/shop/category/${c.slug}`, label: `Category: ${c.name} (/shop/category/${c.slug})` }))
   ]
 
   const handleSave = async () => {
@@ -26,7 +27,14 @@ export function SliderManagerClient({ initialSliders, categories }: { initialSli
       if (selectedFiles.length > 0) {
         const formData = new FormData()
         selectedFiles.forEach(f => formData.append('files', f))
-        newMedia = await uploadSliderFiles(formData)
+        
+        const uploadResult = await uploadSliderFiles(formData)
+        if (!uploadResult.success) {
+          alert('Upload failed: ' + uploadResult.error)
+          setIsSubmitting(false)
+          return
+        }
+        newMedia = uploadResult.urls!
       }
 
       const newSlider = {
