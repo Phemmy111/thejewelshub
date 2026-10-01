@@ -57,17 +57,17 @@ export default async function HomePage() {
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
-            { label: 'Jewels', sub: 'Rings · Necklaces · Sets', href: '/shop/category/jewels' },
-            { label: 'Earrings', sub: 'Studs · Drops · Hoops', href: '/shop/category/earrings' },
-            { label: 'Accessories', sub: 'Watches · Sunglasses', href: '/shop/category/accessories' },
-            { label: 'Bracelets', sub: 'Bangles · Chains', href: '/shop/category/bracelets' },
+            { label: 'Jewels', sub: 'Rings · Necklaces · Sets', href: '/shop/category/jewels', img: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=800&auto=format&fit=crop' },
+            { label: 'Earrings', sub: 'Studs · Drops · Hoops', href: '/shop/category/earrings', img: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=800&auto=format&fit=crop' },
+            { label: 'Accessories', sub: 'Watches · Sunglasses', href: '/shop/category/accessories', img: 'https://images.unsplash.com/photo-1524592094714-cb9c5e40e698?q=80&w=800&auto=format&fit=crop' },
+            { label: 'Bracelets', sub: 'Bangles · Chains', href: '/shop/category/bracelets', img: 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?q=80&w=800&auto=format&fit=crop' },
           ].map((cat, i) => (
             <Reveal key={cat.label} delay={i * 0.1}>
-              <Link href={cat.href} className="cat-tile">
-                <div className="cat-tile-overlay" />
+              <Link href={cat.href} className="cat-tile" style={{ backgroundImage: `url(${cat.img})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+                <div className="cat-tile-overlay" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.7), transparent)' }} />
                 <div style={{ position: 'relative', zIndex: 1 }}>
-                  <h3 className="font-display font-bold" style={{ fontSize: 'clamp(1.1rem, 2vw, 1.4rem)', color: '#0D0D0D', lineHeight: 1.2 }}>{cat.label}</h3>
-                  <p style={{ fontSize: '0.72rem', marginTop: '0.3rem', color: '#7A7069', fontWeight: 500 }}>{cat.sub}</p>
+                  <h3 className="font-display font-bold" style={{ fontSize: 'clamp(1.1rem, 2vw, 1.4rem)', color: '#FFFFFF', lineHeight: 1.2 }}>{cat.label}</h3>
+                  <p style={{ fontSize: '0.72rem', marginTop: '0.3rem', color: 'rgba(255,255,255,0.8)', fontWeight: 500 }}>{cat.sub}</p>
                 </div>
               </Link>
             </Reveal>

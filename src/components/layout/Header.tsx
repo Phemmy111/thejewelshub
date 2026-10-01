@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { ShoppingBag, Search, User, Menu, X, Settings } from 'lucide-react'
+import { ShoppingBag, Search, User, Menu, X, Settings, Package } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 import { useCartStore } from '@/store/cart'
@@ -110,20 +110,25 @@ export default function Header() {
           
           <span key="auth">
             <SignedIn>
-              <UserButton afterSignOutUrl="/">
-                <UserButton.MenuItems>
-                  <UserButton.Link 
-                    label="My Orders" 
-                    href="/account/orders" 
-                    labelIcon={<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>} 
-                  />
-                  <UserButton.Link 
-                    label="Admin Dashboard" 
-                    href="/admin" 
-                    labelIcon={<Settings size={14} />} 
-                  />
-                </UserButton.MenuItems>
-              </UserButton>
+              <div className="flex items-center gap-3">
+                <Link href="/account/orders" aria-label="My Orders" className="p-2 rounded-full transition-colors hover:bg-black/5 block" title="My Orders">
+                  <Package size={19} style={{ color: scrolled ? '#0D0D0D' : '#FFFFFF' }} />
+                </Link>
+                <UserButton afterSignOutUrl="/">
+                  <UserButton.MenuItems>
+                    <UserButton.Link 
+                      label="My Orders" 
+                      href="/account/orders" 
+                      labelIcon={<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>} 
+                    />
+                    <UserButton.Link 
+                      label="Admin Dashboard" 
+                      href="/admin" 
+                      labelIcon={<Settings size={14} />} 
+                    />
+                  </UserButton.MenuItems>
+                </UserButton>
+              </div>
             </SignedIn>
             <SignedOut>
               <Link href="/sign-in" aria-label="Sign in" className="p-2 rounded-full transition-colors hover:bg-black/5 block">
@@ -164,8 +169,14 @@ export default function Header() {
             </Link>
           ))}
           <div className="border-t border-[#E8E5DF] pt-4 mt-2">
+            <SignedIn>
+              <Link href="/account/orders" className="text-base font-medium flex items-center gap-2 text-[#0D0D0D]" onClick={() => setMobileOpen(false)}>
+                <Package size={18} />
+                My Orders
+              </Link>
+            </SignedIn>
             <SignedOut>
-              <Link href="/sign-in" className="text-sm font-medium" style={{ color: '#B8882C' }}>
+              <Link href="/sign-in" className="text-sm font-medium" style={{ color: '#B8882C' }} onClick={() => setMobileOpen(false)}>
                 Sign In / Create Account
               </Link>
             </SignedOut>
