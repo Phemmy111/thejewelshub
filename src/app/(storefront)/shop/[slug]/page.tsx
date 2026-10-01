@@ -2,6 +2,7 @@ import { getProductBySlug } from '@/lib/supabase/storefront'
 import { formatPrice } from '@/lib/utils'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import { AddToCartButton } from '@/components/product/AddToCartButton'
 
 export const revalidate = 60
 
@@ -58,9 +59,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               {product.description}
             </div>
 
-            <button className="btn-cart" style={{ width: '100%', padding: '1.25rem', backgroundColor: '#0D0D0D', color: '#fff', fontSize: '0.85rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', border: 'none', cursor: 'pointer', transition: 'background-color 0.2s' }}>
-              Add to Cart
-            </button>
+            <AddToCartButton product={product} />
             
             <p style={{ fontSize: '0.75rem', color: '#7A7069', marginTop: '1rem', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
               <span style={{ display: 'inline-block', width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#22c55e' }} />

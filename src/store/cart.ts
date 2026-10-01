@@ -1,0 +1,56 @@
+import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
+
+export interface CartItem {
+  id: string
+  productId: string
+  name: string
+  priceKobo: number
+  quantity: number
+  image?: string
+}
+
+interface CartStore {
+  items: CartItem[]
+  isOpen: boolean
+  addItem: (item: Omit<CartItem, 'id'>) => void
+  removeItem: (id: string) => void
+  updateQuantity: (id: string, quantity: number) => void
+  setIsOpen: (isOpen: boolean) => void
+  clearCart: () => void
+}
+
+export const useCartStore = create<CartStore>()(
+  persist(
+    (set, get) => ({
+      items: [],
+      isOpen: false,
+      addItem: (item) => {
+        const currentItems = get().items
+        const existingItem = currentItems.find(i => i.productId === item.productId)
+        
+        if (existingItem) {
+          set({ 
+            items: currentItems.map(i => i.productId === item.productId ? { ...i, quantity: i.quantity + item.quantity } : i),
+            isOpen: true
+          })
+        } else {
+          set({ 
+            items: [...currentItems, { ...item, id: crypto.randomUUID() }],
+            isOpen: true
+          })
+        }
+      },
+      removeItem: (id) => set({ items: get().items.filter(i => i.id !== id) }),
+      updateQuantity: (id, quantity) => {
+        if (quantity < 1) return
+        set({ items: get().items.map(i => i.id === id ? { ...i, quantity } : i) })
+      },
+      setIsOpen: (isOpen) => set({ isOpen }),
+      clearCart: () => set({ items: [] })
+    }),
+    { 
+      name: 'thejewelshub-cart'
+    }
+  )
+)

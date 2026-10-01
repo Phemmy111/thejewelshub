@@ -5,6 +5,36 @@ import Image from 'next/image'
 import { ShoppingBag, Search, User, Menu, X } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
+import { useCartStore } from '@/store/cart'
+
+function CartTrigger({ scrolled }: { scrolled: boolean }) {
+  const { items, setIsOpen } = useCartStore()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  const itemCount = items.reduce((total, item) => total + item.quantity, 0)
+
+  return (
+    <button 
+      onClick={() => setIsOpen(true)}
+      aria-label="Cart" 
+      className="relative p-2 rounded-full transition-colors hover:bg-black/5"
+    >
+      <ShoppingBag size={19} style={{ color: scrolled ? '#0D0D0D' : '#FFFFFF' }} />
+      {mounted && itemCount > 0 && (
+        <span
+          className="absolute -top-0.5 -right-0.5 h-[18px] w-[18px] rounded-full text-[10px] font-bold flex items-center justify-center"
+          style={{ backgroundColor: '#B8882C', color: '#FFFFFF' }}
+        >
+          {itemCount}
+        </span>
+      )}
+    </button>
+  )
+}
 
 const navLinks = [
   { href: '/shop', label: 'Shop All' },
@@ -74,30 +104,22 @@ export default function Header() {
 
         {/* Actions */}
         <div className="flex items-center gap-2">
-          {[
-            <button key="search" aria-label="Search" className="p-2 rounded-full transition-colors hover:bg-black/5">
-              <Search size={19} style={{ color: scrolled ? '#0D0D0D' : '#FFFFFF' }} />
-            </button>,
-            <span key="auth">
-              <SignedIn>
-                <UserButton afterSignOutUrl="/" />
-              </SignedIn>
-              <SignedOut>
-                <Link href="/sign-in" aria-label="Sign in" className="p-2 rounded-full transition-colors hover:bg-black/5 block">
-                  <User size={19} style={{ color: scrolled ? '#0D0D0D' : '#FFFFFF' }} />
-                </Link>
-              </SignedOut>
-            </span>,
-            <button key="cart" aria-label="Cart" className="relative p-2 rounded-full transition-colors hover:bg-black/5">
-              <ShoppingBag size={19} style={{ color: scrolled ? '#0D0D0D' : '#FFFFFF' }} />
-              <span
-                className="absolute -top-0.5 -right-0.5 h-[18px] w-[18px] rounded-full text-[10px] font-bold flex items-center justify-center"
-                style={{ backgroundColor: '#B8882C', color: '#FFFFFF' }}
-              >
-                0
-              </span>
-            </button>,
-          ]}
+          <button aria-label="Search" className="p-2 rounded-full transition-colors hover:bg-black/5">
+            <Search size={19} style={{ color: scrolled ? '#0D0D0D' : '#FFFFFF' }} />
+          </button>
+          
+          <span key="auth">
+            <SignedIn>
+              <UserButton afterSignOutUrl="/" />
+            </SignedIn>
+            <SignedOut>
+              <Link href="/sign-in" aria-label="Sign in" className="p-2 rounded-full transition-colors hover:bg-black/5 block">
+                <User size={19} style={{ color: scrolled ? '#0D0D0D' : '#FFFFFF' }} />
+              </Link>
+            </SignedOut>
+          </span>
+          
+          <CartTrigger scrolled={scrolled} />
 
           <button
             className="md:hidden p-2 rounded-full transition-colors hover:bg-black/5"
