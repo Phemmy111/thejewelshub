@@ -10,8 +10,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // Vercel deployment optimizations
-  compress: true,
 }
 
 export default nextConfig
