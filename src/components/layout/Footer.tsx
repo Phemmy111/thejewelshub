@@ -67,13 +67,7 @@ export default function Footer() {
               <ul className="space-y-3">
                 {links.map(link => (
                   <li key={link.href}>
-                    <Link
-                      href={link.href}
-                      className="text-sm transition-colors duration-200"
-                      style={{ color: 'rgba(255,255,255,0.5)' }}
-                      onMouseEnter={e => (e.currentTarget.style.color = '#FFFFFF')}
-                      onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.5)')}
-                    >
+                    <Link href={link.href} className="footer-link">
                       {link.label}
                     </Link>
                   </li>

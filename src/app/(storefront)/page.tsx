@@ -2,144 +2,86 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 export default function HomePage() {
+  const whatsapp = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '2349133115713'
+
   return (
     <div style={{ backgroundColor: '#F5F4F0' }}>
+      <style>{`
+        .hero-btn-primary { background-color: #B8882C; color: #fff; transition: background-color 0.2s; }
+        .hero-btn-primary:hover { background-color: #D4A84B; }
+        .hero-btn-outline { border: 1px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.85); transition: border-color 0.2s, color 0.2s; }
+        .hero-btn-outline:hover { border-color: rgba(255,255,255,0.7); color: #fff; }
+        .cat-tile { background: #1A1510; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; aspect-ratio: 3/4; padding: 1.5rem; transition: transform 0.3s; }
+        .cat-tile:hover { transform: translateY(-2px); }
+        .cat-tile::after { content: ''; position: absolute; bottom: 0; left: 0; height: 2px; width: 0; background-color: #B8882C; transition: width 0.35s ease; }
+        .cat-tile:hover::after { width: 100%; }
+        .cat-tile-overlay { position: absolute; inset: 0; opacity: 0; transition: opacity 0.3s; background: linear-gradient(to top, rgba(184,136,44,0.15), transparent); }
+        .cat-tile:hover .cat-tile-overlay { opacity: 1; }
+        .footer-link { color: rgba(255,255,255,0.5); transition: color 0.2s; font-size: 0.875rem; }
+        .footer-link:hover { color: #fff; }
+        .shop-all-link { color: #B8882C; border-bottom: 1px solid #B8882C; transition: opacity 0.2s; }
+        .shop-all-link:hover { opacity: 0.7; }
+      `}</style>
 
       {/* ── HERO ─────────────────────────────────────────────────────────── */}
       <section
-        className="relative w-full flex items-end md:items-center overflow-hidden"
-        style={{ minHeight: '100vh', background: '#0D0D0D' }}
+        style={{ minHeight: '100vh', background: '#0D0D0D', position: 'relative', display: 'flex', alignItems: 'flex-end' }}
+        className="md:items-center overflow-hidden"
       >
-        {/* Background texture — diagonal gold rule */}
-        <div
-          className="absolute inset-0 opacity-[0.04]"
-          style={{
-            backgroundImage: `repeating-linear-gradient(
-              -45deg,
-              #B8882C 0px,
-              #B8882C 1px,
-              transparent 1px,
-              transparent 60px
-            )`,
-          }}
-        />
+        {/* Diagonal gold texture */}
+        <div className="absolute inset-0" style={{ opacity: 0.04, backgroundImage: 'repeating-linear-gradient(-45deg, #B8882C 0px, #B8882C 1px, transparent 1px, transparent 60px)' }} />
 
-        {/* Large faded JH monogram watermark */}
-        <div
-          className="absolute right-0 top-0 bottom-0 w-[55%] md:w-[50%] flex items-center justify-center pointer-events-none select-none"
-          style={{ opacity: 0.06 }}
-        >
-          <Image
-            src="/brand/logo.jpg"
-            alt=""
-            fill
-            className="object-contain object-right"
-            style={{ filter: 'invert(1)' }}
-          />
+        {/* Faded JH watermark */}
+        <div className="absolute right-0 top-0 bottom-0 pointer-events-none select-none" style={{ width: '55%', opacity: 0.06, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Image src="/brand/logo.jpg" alt="" fill className="object-contain object-right" style={{ filter: 'invert(1)' }} />
         </div>
 
-        {/* Gradient overlay — fades right side */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background: 'linear-gradient(90deg, rgba(13,13,13,0.96) 0%, rgba(13,13,13,0.7) 55%, rgba(13,13,13,0.2) 100%)',
-          }}
-        />
+        {/* Gradient */}
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(13,13,13,0.96) 0%, rgba(13,13,13,0.7) 55%, rgba(13,13,13,0.2) 100%)' }} />
 
         {/* Content */}
         <div className="relative z-10 w-full max-w-7xl mx-auto px-5 sm:px-8 pb-24 md:pb-0 pt-36 md:pt-0">
-          <div className="max-w-xl">
-            {/* Gold rule */}
-            <div className="flex items-center gap-4 mb-8">
+          <div style={{ maxWidth: '560px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
               <span style={{ display: 'block', width: '40px', height: '1px', backgroundColor: '#B8882C' }} />
-              <span
-                className="text-xs font-medium tracking-[0.25em] uppercase"
-                style={{ color: '#B8882C' }}
-              >
-                New Collection
-              </span>
+              <span style={{ fontSize: '0.7rem', fontWeight: 500, letterSpacing: '0.25em', textTransform: 'uppercase', color: '#B8882C' }}>New Collection</span>
             </div>
-
-            {/* Headline */}
             <h1
-              className="font-display font-bold leading-[1.08]"
-              style={{
-                fontSize: 'clamp(2.8rem, 6vw, 5.5rem)',
-                color: '#FFFFFF',
-                letterSpacing: '-0.01em',
-              }}
+              className="font-display font-bold"
+              style={{ fontSize: 'clamp(2.8rem, 6vw, 5.5rem)', color: '#FFFFFF', lineHeight: 1.08, letterSpacing: '-0.01em' }}
             >
-              Wear What
-              <br />
-              <em style={{ color: '#B8882C', fontStyle: 'italic' }}>Speaks</em>
-              <br />
+              Wear What<br />
+              <em style={{ color: '#B8882C', fontStyle: 'italic' }}>Speaks</em><br />
               for You.
             </h1>
-
-            {/* Sub */}
-            <p
-              className="mt-6 leading-relaxed max-w-sm"
-              style={{ color: 'rgba(255,255,255,0.60)', fontSize: '1.05rem' }}
-            >
+            <p style={{ marginTop: '1.5rem', color: 'rgba(255,255,255,0.6)', fontSize: '1.05rem', lineHeight: 1.7, maxWidth: '380px' }}>
               Curated jewellery &amp; accessories, sourced for the bold and the elegant.
               Fast delivery across all 36 Nigerian states.
             </p>
-
-            {/* CTAs */}
-            <div className="flex flex-wrap items-center gap-4 mt-10">
-              <Link
-                href="/shop"
-                className="inline-flex items-center gap-2 px-8 py-4 font-semibold text-sm tracking-wide transition-all duration-200"
-                style={{
-                  backgroundColor: '#B8882C',
-                  color: '#FFFFFF',
-                  letterSpacing: '0.06em',
-                  textTransform: 'uppercase',
-                }}
-                onMouseEnter={e => ((e.currentTarget as HTMLAnchorElement).style.backgroundColor = '#D4A84B')}
-                onMouseLeave={e => ((e.currentTarget as HTMLAnchorElement).style.backgroundColor = '#B8882C')}
-              >
+            <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '1rem', marginTop: '2.5rem' }}>
+              <Link href="/shop" className="hero-btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '1rem 2rem', fontWeight: 600, fontSize: '0.8rem', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
                 Shop the Collection
               </Link>
-              <Link
-                href="/jewels"
-                className="inline-flex items-center gap-2 px-8 py-4 font-semibold text-sm tracking-wide transition-all duration-200"
-                style={{
-                  border: '1px solid rgba(255,255,255,0.3)',
-                  color: 'rgba(255,255,255,0.85)',
-                  letterSpacing: '0.06em',
-                  textTransform: 'uppercase',
-                }}
-              >
+              <Link href="/jewels" className="hero-btn-outline" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '1rem 2rem', fontWeight: 600, fontSize: '0.8rem', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
                 View Jewels
               </Link>
             </div>
           </div>
         </div>
 
-        {/* Bottom scroll cue */}
-        <div
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-          style={{ color: 'rgba(255,255,255,0.3)' }}
-        >
-          <span style={{ fontSize: '10px', letterSpacing: '0.2em', textTransform: 'uppercase' }}>Scroll</span>
+        {/* Scroll cue */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2" style={{ color: 'rgba(255,255,255,0.3)' }}>
+          <span style={{ fontSize: '9px', letterSpacing: '0.2em', textTransform: 'uppercase' }}>Scroll</span>
           <span style={{ display: 'block', width: '1px', height: '40px', backgroundColor: 'rgba(255,255,255,0.2)' }} />
         </div>
       </section>
 
       {/* ── TRUST STRIP ──────────────────────────────────────────────────── */}
       <section style={{ backgroundColor: '#0D0D0D', borderTop: '1px solid rgba(184,136,44,0.3)' }}>
-        <div
-          className="max-w-6xl mx-auto px-5 sm:px-8 py-4 flex flex-wrap justify-center gap-8"
-          style={{ fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.45)' }}
-        >
-          {[
-            'Secure Paystack Checkout',
-            'Delivery Across All 36 States',
-            'WhatsApp Customer Support',
-            'Authentic Products Guaranteed',
-          ].map(item => (
-            <span key={item} className="flex items-center gap-2">
+        <div className="max-w-6xl mx-auto px-5 sm:px-8 py-4 flex flex-wrap justify-center gap-8"
+          style={{ fontSize: '0.7rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)' }}>
+          {['Secure Paystack Checkout', 'Delivery Across All 36 States', 'WhatsApp Customer Support', 'Authentic Products Guaranteed'].map(item => (
+            <span key={item} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <span style={{ display: 'inline-block', width: '4px', height: '4px', borderRadius: '50%', backgroundColor: '#B8882C', flexShrink: 0 }} />
               {item}
             </span>
@@ -147,34 +89,16 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── SECTIONS ─────────────────────────────────────────────────────── */}
+      {/* ── SHOP BY CATEGORY ─────────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-5 sm:px-8 py-24">
-        {/* Section header */}
-        <div className="flex items-end justify-between mb-12">
+        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: '3rem' }}>
           <div>
-            <p
-              className="text-xs font-medium uppercase tracking-[0.2em] mb-3"
-              style={{ color: '#B8882C' }}
-            >
-              Explore
-            </p>
-            <h2
-              className="font-display font-bold"
-              style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.8rem)', color: '#0D0D0D', lineHeight: 1.15 }}
-            >
-              Shop by Category
-            </h2>
+            <p style={{ fontSize: '0.7rem', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.22em', color: '#B8882C', marginBottom: '0.75rem' }}>Explore</p>
+            <h2 className="font-display font-bold" style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.8rem)', color: '#0D0D0D', lineHeight: 1.15 }}>Shop by Category</h2>
           </div>
-          <Link
-            href="/shop"
-            className="hidden md:inline-flex text-sm font-medium pb-0.5"
-            style={{ color: '#B8882C', borderBottom: '1px solid #B8882C' }}
-          >
-            View All →
-          </Link>
+          <Link href="/shop" className="shop-all-link hidden md:inline-flex" style={{ fontSize: '0.85rem', fontWeight: 500, paddingBottom: '2px' }}>View All →</Link>
         </div>
 
-        {/* Category grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
             { label: 'Jewels', sub: 'Rings · Necklaces · Sets', href: '/jewels', bg: '#1A1510' },
@@ -182,28 +106,11 @@ export default function HomePage() {
             { label: 'Accessories', sub: 'Watches · Sunglasses', href: '/accessories', bg: '#101414' },
             { label: 'Bracelets', sub: 'Bangles · Chains', href: '/jewels/bracelets', bg: '#141014' },
           ].map(cat => (
-            <Link
-              key={cat.label}
-              href={cat.href}
-              className="group relative overflow-hidden flex flex-col justify-end"
-              style={{ background: cat.bg, aspectRatio: '3/4', padding: '1.5rem' }}
-            >
-              <div
-                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                style={{ background: 'linear-gradient(to top, rgba(184,136,44,0.15), transparent)' }}
-              />
-              <div
-                className="absolute bottom-0 left-0 h-[2px] w-0 group-hover:w-full transition-all duration-400"
-                style={{ backgroundColor: '#B8882C' }}
-              />
-              <div className="relative z-10">
-                <h3
-                  className="font-display font-bold text-white leading-tight"
-                  style={{ fontSize: 'clamp(1.1rem, 2vw, 1.4rem)' }}
-                >
-                  {cat.label}
-                </h3>
-                <p className="text-xs mt-1" style={{ color: 'rgba(255,255,255,0.45)' }}>{cat.sub}</p>
+            <Link key={cat.label} href={cat.href} className="cat-tile" style={{ background: cat.bg }}>
+              <div className="cat-tile-overlay" />
+              <div style={{ position: 'relative', zIndex: 1 }}>
+                <h3 className="font-display font-bold text-white" style={{ fontSize: 'clamp(1.1rem, 2vw, 1.4rem)', lineHeight: 1.2 }}>{cat.label}</h3>
+                <p style={{ fontSize: '0.72rem', marginTop: '0.3rem', color: 'rgba(255,255,255,0.4)' }}>{cat.sub}</p>
               </div>
             </Link>
           ))}
@@ -211,73 +118,44 @@ export default function HomePage() {
       </section>
 
       {/* ── BRAND STATEMENT ──────────────────────────────────────────────── */}
-      <section
-        className="py-24 px-5"
-        style={{ backgroundColor: '#0D0D0D', position: 'relative', overflow: 'hidden' }}
-      >
-        <div
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage: `repeating-linear-gradient(
-              45deg, #B8882C 0px, #B8882C 1px, transparent 1px, transparent 80px
-            )`,
-          }}
-        />
+      <section style={{ backgroundColor: '#0D0D0D', position: 'relative', overflow: 'hidden', padding: '6rem 1.25rem' }}>
+        <div className="absolute inset-0" style={{ opacity: 0.03, backgroundImage: 'repeating-linear-gradient(45deg, #B8882C 0px, #B8882C 1px, transparent 1px, transparent 80px)' }} />
         <div className="relative z-10 max-w-4xl mx-auto text-center">
-          <div className="w-12 mx-auto mb-8" style={{ height: '1px', backgroundColor: '#B8882C' }} />
-          <blockquote
-            className="font-display italic leading-tight"
-            style={{
-              fontSize: 'clamp(1.6rem, 4vw, 3rem)',
-              color: '#FFFFFF',
-              letterSpacing: '-0.01em',
-            }}
-          >
-            &ldquo;Every piece tells a story.
-            <br />
+          <div style={{ width: '48px', height: '1px', backgroundColor: '#B8882C', margin: '0 auto 2rem' }} />
+          <blockquote className="font-display italic" style={{ fontSize: 'clamp(1.6rem, 4vw, 3rem)', color: '#FFFFFF', lineHeight: 1.3, letterSpacing: '-0.01em' }}>
+            &ldquo;Every piece tells a story.<br />
             <span style={{ color: '#B8882C' }}>What will yours say?</span>&rdquo;
           </blockquote>
-          <div className="w-12 mx-auto mt-8" style={{ height: '1px', backgroundColor: '#B8882C' }} />
+          <div style={{ width: '48px', height: '1px', backgroundColor: '#B8882C', margin: '2rem auto 0' }} />
         </div>
       </section>
 
       {/* ── NEW ARRIVALS PLACEHOLDER ─────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-5 sm:px-8 py-24">
-        <div className="flex items-end justify-between mb-12">
+        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: '3rem' }}>
           <div>
-            <p className="text-xs font-medium uppercase tracking-[0.2em] mb-3" style={{ color: '#B8882C' }}>
-              Just In
-            </p>
-            <h2
-              className="font-display font-bold"
-              style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.8rem)', color: '#0D0D0D', lineHeight: 1.15 }}
-            >
-              New Arrivals
-            </h2>
+            <p style={{ fontSize: '0.7rem', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.22em', color: '#B8882C', marginBottom: '0.75rem' }}>Just In</p>
+            <h2 className="font-display font-bold" style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.8rem)', color: '#0D0D0D', lineHeight: 1.15 }}>New Arrivals</h2>
           </div>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[1, 2, 3, 4].map(i => (
-            <div key={i} className="flex flex-col gap-3">
-              <div
-                className="w-full"
-                style={{ aspectRatio: '3/4', backgroundColor: '#E8E5DF', borderRadius: '2px' }}
-              />
-              <div>
-                <div style={{ width: '70%', height: '14px', backgroundColor: '#E8E5DF', borderRadius: '2px', marginBottom: '6px' }} />
-                <div style={{ width: '40%', height: '14px', backgroundColor: '#B8882C22', borderRadius: '2px' }} />
+            <div key={i}>
+              <div style={{ width: '100%', aspectRatio: '3/4', backgroundColor: '#E8E5DF', borderRadius: '2px' }} />
+              <div style={{ marginTop: '0.75rem' }}>
+                <div style={{ width: '70%', height: '13px', backgroundColor: '#E8E5DF', borderRadius: '2px', marginBottom: '6px' }} />
+                <div style={{ width: '40%', height: '13px', backgroundColor: 'rgba(184,136,44,0.2)', borderRadius: '2px' }} />
               </div>
             </div>
           ))}
         </div>
-        <p className="text-center mt-12 text-sm" style={{ color: '#7A7069' }}>
-          Products are being loaded — check back soon or{' '}
-          <a href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '2349133115713'}`} style={{ color: '#B8882C', textDecoration: 'underline' }}>
+        <p style={{ textAlign: 'center', marginTop: '3rem', fontSize: '0.875rem', color: '#7A7069' }}>
+          Products loading soon —{' '}
+          <a href={`https://wa.me/${whatsapp}`} style={{ color: '#B8882C', textDecoration: 'underline' }}>
             message us on WhatsApp
           </a>.
         </p>
       </section>
-
     </div>
   )
 }
