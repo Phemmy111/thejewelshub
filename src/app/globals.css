@@ -2,33 +2,22 @@
 
 /* ── Brand Design Tokens ─────────────────────────────────────────────────── */
 @theme inline {
-  /* Page background — warm light gray */
   --color-background:   #F5F4F0;
-  /* Card / surface white */
   --color-surface:      #FFFFFF;
-  /* Primary text */
   --color-foreground:   #0D0D0D;
-  /* Secondary text */
   --color-muted:        #7A7069;
-  /* Subtle borders */
   --color-border:       #E8E5DF;
-
-  /* Gold — sampled from the JH logo */
-  --color-gold:         #B8882C;   /* Main brand gold */
-  --color-gold-light:   #D4A84B;   /* Hover / shimmer highlight */
-  --color-gold-dark:    #8C6518;   /* Active / pressed */
-  --color-gold-pale:    #F0E4C4;   /* Subtle tint backgrounds */
-
-  /* Typography */
+  --color-gold:         #B8882C;
+  --color-gold-light:   #D4A84B;
+  --color-gold-dark:    #8C6518;
+  --color-gold-pale:    #F0E4C4;
   --font-display: var(--font-playfair), 'Georgia', serif;
   --font-sans:    var(--font-dm-sans), system-ui, sans-serif;
 }
 
 /* ── Base ────────────────────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; }
-
 html { scroll-behavior: smooth; }
-
 body {
   background-color: #F5F4F0;
   color: #0D0D0D;
@@ -37,20 +26,13 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ── Gold shimmer — logo on first load ──────────────────────────────────── */
+/* ── Gold shimmer (logo entrance) ───────────────────────────────────────── */
 @keyframes shimmer {
   0%   { background-position: -200% center; }
-  100% { background-position: 200% center; }
+  100% { background-position:  200% center; }
 }
 .gold-shimmer {
-  background: linear-gradient(
-    90deg,
-    #8C6518 0%,
-    #D4A84B 35%,
-    #F0D080 50%,
-    #D4A84B 65%,
-    #8C6518 100%
-  );
+  background: linear-gradient(90deg, #8C6518 0%, #D4A84B 35%, #F0D080 50%, #D4A84B 65%, #8C6518 100%);
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -60,19 +42,142 @@ body {
 
 @keyframes slideUp {
   from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0);    }
 }
 
 /* ── Focus ───────────────────────────────────────────────────────────────── */
-:focus-visible {
-  outline: 2px solid #B8882C;
-  outline-offset: 3px;
-}
+:focus-visible { outline: 2px solid #B8882C; outline-offset: 3px; }
 
 /* ── Reduced motion ──────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
+    animation-duration:        0.01ms !important;
+    animation-iteration-count: 1      !important;
+    transition-duration:       0.3s   !important;
   }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   HERO CTA BUTTONS
+   Primary  = gold fill,  black text, ≥ 7:1 contrast on gold bg
+   Outline  = gold border, gold text, ≥ 4.5:1 on dark hero bg
+   Both get a left-sweep fill on hover and a visible focus ring.
+   ══════════════════════════════════════════════════════════════════════════ */
+.hero-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.75rem;
+  background-color: #B8882C;
+  color: #0D0D0D;
+  border: 2px solid #B8882C;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+.hero-btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: #D4A84B;
+  transform: translateX(-100%);
+  transition: transform 0.35s ease;
+  z-index: 0;
+}
+.hero-btn-primary:hover::before { transform: translateX(0); }
+.hero-btn-primary > *           { position: relative; z-index: 1; }
+.hero-btn-primary:focus-visible { outline: 2px solid #F0E4C4; outline-offset: 3px; }
+
+.hero-btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.75rem;
+  background-color: transparent;
+  color: #B8882C;
+  border: 2px solid #B8882C;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  transition: color 0.35s ease;
+}
+.hero-btn-outline::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: #B8882C;
+  transform: translateX(-100%);
+  transition: transform 0.35s ease;
+  z-index: 0;
+}
+.hero-btn-outline:hover::before { transform: translateX(0); }
+.hero-btn-outline:hover          { color: #0D0D0D; }
+.hero-btn-outline > *            { position: relative; z-index: 1; }
+.hero-btn-outline:focus-visible  { outline: 2px solid #B8882C; outline-offset: 3px; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   HERO ANIMATION KEYFRAMES
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Headline line-by-line mask reveal: text rises from overflow-hidden container */
+@keyframes maskUp {
+  from { transform: translateY(106%); }
+  to   { transform: translateY(0);    }
+}
+
+/* Eyebrow / subtext / button entrance: opacity + tiny blur + y nudge */
+@keyframes blurFadeIn {
+  from { opacity: 0; filter: blur(8px); transform: translateY(12px); }
+  to   { opacity: 1; filter: blur(0);   transform: translateY(0);    }
+}
+
+/* Gold highlight: one diagonal light streak sweeps across the word */
+@keyframes shimmerStreak {
+  0%   { background-position: 220% center; }
+  100% { background-position: -220% center; }
+}
+
+/* Sparkle glints: scale 0→1→0 with 45° rotation, once */
+@keyframes sparkleGlint {
+  0%, 100% { transform: scale(0) rotate(0deg);  opacity: 0; }
+  50%       { transform: scale(1) rotate(45deg); opacity: 1; }
+}
+
+/* Rotating-word slot machine: drops in from below */
+@keyframes slotIn {
+  from { transform: translateY(110%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* Scroll-cue: gold bar drops through a contained track, loops */
+@keyframes scrollDrop {
+  0%   { transform: translateY(-100%); opacity: 0;   }
+  15%  {                                opacity: 1;   }
+  85%  {                                opacity: 1;   }
+  100% { transform: translateY(200%);  opacity: 0;   }
+}
+
+/* Ken Burns: slow zoom across slide duration */
+@keyframes kenBurns {
+  from { transform: scale(1);    }
+  to   { transform: scale(1.08); }
+}
+
+/* ── Sparkle glint helper ────────────────────────────────────────────────── */
+.hero-sparkle {
+  position: absolute;
+  font-size: 0.45rem;
+  color: #D4A84B;
+  pointer-events: none;
+  user-select: none;
+  line-height: 1;
+  animation: sparkleGlint 0.6s ease both;
 }
