@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { ShoppingBag, Search, User, Menu, X } from 'lucide-react'
 import { useState } from 'react'
-import { useUser, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
+import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 import { cn } from '@/lib/utils'
 
 export default function Header() {

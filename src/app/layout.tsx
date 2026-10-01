@@ -35,16 +35,19 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  return (
-    <ClerkProvider>
-      <html
-        lang="en"
-        className={`${playfair.variable} ${dmSans.variable} h-full`}
-      >
-        <body className="min-h-full flex flex-col bg-background text-foreground antialiased">
-          {children}
-        </body>
-      </html>
-    </ClerkProvider>
+  const clerkKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+
+  const content = (
+    <html
+      lang="en"
+      className={`${playfair.variable} ${dmSans.variable} h-full`}
+    >
+      <body className="min-h-full flex flex-col bg-background text-foreground antialiased">
+        {children}
+      </body>
+    </html>
   )
+
+  return clerkKey ? <ClerkProvider>{content}</ClerkProvider> : content
 }
+
