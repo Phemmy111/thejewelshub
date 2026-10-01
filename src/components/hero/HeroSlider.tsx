@@ -200,7 +200,7 @@ export default function HeroSlider({ sliderConfig }: { sliderConfig?: any }) {
           {String(active + 1).padStart(2, '0')} / {String(mediaItems.length).padStart(2, '0')}
         </span>
         <div style={{ display: 'flex', gap: '8px' }}>
-          {mediaItems.map((_, i) => (
+          {mediaItems.map((_: any, i: number) => (
             <button
               key={i}
               onClick={() => goTo(i)}
