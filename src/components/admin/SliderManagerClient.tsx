@@ -22,7 +22,7 @@ export function SliderManagerClient({ initialSliders, categories }: { initialSli
   const handleSave = async () => {
     setIsSubmitting(true)
     try {
-      let newMedia = []
+      let newMedia: any[] = []
       if (selectedFiles.length > 0) {
         const formData = new FormData()
         selectedFiles.forEach(f => formData.append('files', f))
