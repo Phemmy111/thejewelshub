@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import Link from 'next/link'
 
 const footerLinks = {
@@ -19,58 +20,76 @@ const footerLinks = {
 }
 
 export default function Footer() {
-  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '2349133115713'
+  const whatsapp = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '2349133115713'
 
   return (
-    <footer className="bg-black text-white mt-auto">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-14 grid grid-cols-2 md:grid-cols-4 gap-10">
-        {/* Brand */}
-        <div className="col-span-2 md:col-span-1">
-          <span className="font-display text-2xl font-bold text-[var(--color-gold)]">
-            The Jeweller&apos;s Hub
-          </span>
-          <p className="mt-3 text-white/60 text-sm leading-relaxed max-w-xs">
-            Premium accessories & jewellery, handpicked and delivered with love across Nigeria.
-          </p>
-          <div className="mt-5 flex gap-4">
+    <footer style={{ backgroundColor: '#080808', color: 'rgba(255,255,255,0.6)' }}>
+      {/* Gold top border */}
+      <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, #B8882C 30%, #B8882C 70%, transparent)' }} />
+
+      <div className="max-w-7xl mx-auto px-5 sm:px-8 pt-16 pb-8">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-10 mb-16">
+
+          {/* Brand column */}
+          <div className="col-span-2">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="relative w-10 h-10 flex-shrink-0">
+                <Image src="/brand/logo.jpg" alt="The Jeweller's Hub" fill className="object-contain" />
+              </div>
+              <span className="font-display text-lg font-bold" style={{ color: '#FFFFFF' }}>
+                The Jeweller&apos;s Hub
+              </span>
+            </div>
+            <p className="text-sm leading-relaxed max-w-xs" style={{ color: 'rgba(255,255,255,0.45)' }}>
+              Premium accessories &amp; jewellery, handpicked and delivered with care across all 36 Nigerian states.
+            </p>
             <a
-              href={`https://wa.me/${whatsappNumber}`}
+              href={`https://wa.me/${whatsapp}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[var(--color-gold)] hover:text-[var(--color-gold-light)] text-sm font-medium transition-colors"
+              className="inline-flex items-center gap-2 mt-6 text-sm font-medium transition-colors"
+              style={{ color: '#B8882C' }}
             >
-              WhatsApp Us
+              <span style={{ display: 'inline-block', width: '16px', height: '1px', backgroundColor: '#B8882C' }} />
+              Chat on WhatsApp
             </a>
           </div>
+
+          {/* Link columns */}
+          {Object.entries(footerLinks).map(([group, links]) => (
+            <div key={group}>
+              <h4
+                className="text-xs font-semibold uppercase mb-5"
+                style={{ color: '#B8882C', letterSpacing: '0.15em' }}
+              >
+                {group}
+              </h4>
+              <ul className="space-y-3">
+                {links.map(link => (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className="text-sm transition-colors duration-200"
+                      style={{ color: 'rgba(255,255,255,0.5)' }}
+                      onMouseEnter={e => (e.currentTarget.style.color = '#FFFFFF')}
+                      onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.5)')}
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
 
-        {/* Link groups */}
-        {Object.entries(footerLinks).map(([group, links]) => (
-          <div key={group}>
-            <h3 className="text-xs font-semibold text-white/40 uppercase tracking-widest mb-4">
-              {group}
-            </h3>
-            <ul className="space-y-2.5">
-              {links.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-white/70 hover:text-[var(--color-gold)] transition-colors"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
-
-      {/* Bottom bar */}
-      <div className="border-t border-white/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-white/40">
+        {/* Bottom bar */}
+        <div
+          className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6"
+          style={{ borderTop: '1px solid rgba(255,255,255,0.07)', fontSize: '0.72rem', letterSpacing: '0.05em', color: 'rgba(255,255,255,0.25)' }}
+        >
           <span>© {new Date().getFullYear()} The Jeweller&apos;s Hub. All rights reserved.</span>
-          <span>Secure payments by Paystack 🔒</span>
+          <span style={{ color: 'rgba(184,136,44,0.6)' }}>Powered by Paystack · Secured by Clerk</span>
         </div>
       </div>
     </footer>

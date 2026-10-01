@@ -2,106 +2,72 @@
 
 /* ── Brand Design Tokens ─────────────────────────────────────────────────── */
 @theme inline {
-  /* Colours */
-  --color-background:   #EBEBEC;  /* Page background — light gray */
-  --color-surface:      #FFFFFF;  /* Cards, drawers, modals */
-  --color-foreground:   #111111;  /* Primary text */
-  --color-muted:        #6B7280;  /* Secondary text */
-  --color-border:       #E5E7EB;  /* Subtle borders */
+  /* Page background — warm light gray */
+  --color-background:   #F5F4F0;
+  /* Card / surface white */
+  --color-surface:      #FFFFFF;
+  /* Primary text */
+  --color-foreground:   #0D0D0D;
+  /* Secondary text */
+  --color-muted:        #7A7069;
+  /* Subtle borders */
+  --color-border:       #E8E5DF;
 
-  /* Gold — primary accent */
-  --color-gold:         #C9A84C;  /* Main gold */
-  --color-gold-light:   #E8C96D;  /* Hover / shimmer highlight */
-  --color-gold-dark:    #A07C30;  /* Active / pressed */
-
-  /* Semantic */
-  --color-primary:      var(--color-gold);
-  --color-primary-fg:   #111111;
+  /* Gold — sampled from the JH logo */
+  --color-gold:         #B8882C;   /* Main brand gold */
+  --color-gold-light:   #D4A84B;   /* Hover / shimmer highlight */
+  --color-gold-dark:    #8C6518;   /* Active / pressed */
+  --color-gold-pale:    #F0E4C4;   /* Subtle tint backgrounds */
 
   /* Typography */
-  --font-display: var(--font-playfair), Georgia, serif;
+  --font-display: var(--font-playfair), 'Georgia', serif;
   --font-sans:    var(--font-dm-sans), system-ui, sans-serif;
-
-  /* Type scale */
-  --text-xs:   0.75rem;
-  --text-sm:   0.875rem;
-  --text-base: 1rem;
-  --text-lg:   1.125rem;
-  --text-xl:   1.25rem;
-  --text-2xl:  1.5rem;
-  --text-3xl:  1.875rem;
-  --text-4xl:  2.25rem;
-  --text-5xl:  3rem;
-
-  /* Spacing / radii */
-  --radius-sm:  0.25rem;
-  --radius-md:  0.5rem;
-  --radius-lg:  1rem;
-  --radius-full: 9999px;
-
-  /* Shadows */
-  --shadow-card: 0 2px 8px 0 rgba(0,0,0,0.07);
-  --shadow-lg:   0 8px 32px 0 rgba(0,0,0,0.12);
 }
 
-/* ── Base Styles ─────────────────────────────────────────────────────────── */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
+/* ── Base ────────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
 
-html {
-  scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 
 body {
-  background-color: var(--color-background);
-  color: var(--color-foreground);
+  background-color: #F5F4F0;
+  color: #0D0D0D;
   font-family: var(--font-sans);
-  line-height: 1.6;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* ── Typography helpers ──────────────────────────────────────────────────── */
-.font-display {
-  font-family: var(--font-display);
-}
-
-/* ── Gold shimmer animation ──────────────────────────────────────────────── */
-@keyframes gold-shimmer {
+/* ── Gold shimmer — logo on first load ──────────────────────────────────── */
+@keyframes shimmer {
   0%   { background-position: -200% center; }
   100% { background-position: 200% center; }
 }
-
 .gold-shimmer {
   background: linear-gradient(
     90deg,
-    var(--color-gold-dark) 0%,
-    var(--color-gold-light) 40%,
-    var(--color-gold) 50%,
-    var(--color-gold-light) 60%,
-    var(--color-gold-dark) 100%
+    #8C6518 0%,
+    #D4A84B 35%,
+    #F0D080 50%,
+    #D4A84B 65%,
+    #8C6518 100%
   );
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  animation: gold-shimmer 2.5s linear 1;
+  animation: shimmer 2.8s linear 1 forwards;
 }
 
-/* ── Focus ring ──────────────────────────────────────────────────────────── */
+/* ── Focus ───────────────────────────────────────────────────────────────── */
 :focus-visible {
-  outline: 2px solid var(--color-gold);
-  outline-offset: 2px;
+  outline: 2px solid #B8882C;
+  outline-offset: 3px;
 }
 
 /* ── Reduced motion ──────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
 }
