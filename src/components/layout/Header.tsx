@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { ShoppingBag, Search, User, Menu, X } from 'lucide-react'
+import { ShoppingBag, Search, User, Menu, X, Settings } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 import { useCartStore } from '@/store/cart'
@@ -110,7 +110,15 @@ export default function Header() {
           
           <span key="auth">
             <SignedIn>
-              <UserButton afterSignOutUrl="/" />
+              <UserButton afterSignOutUrl="/">
+                <UserButton.MenuItems>
+                  <UserButton.Link 
+                    label="Admin Dashboard" 
+                    href="/admin" 
+                    labelIcon={<Settings size={14} />} 
+                  />
+                </UserButton.MenuItems>
+              </UserButton>
             </SignedIn>
             <SignedOut>
               <Link href="/sign-in" aria-label="Sign in" className="p-2 rounded-full transition-colors hover:bg-black/5 block">
