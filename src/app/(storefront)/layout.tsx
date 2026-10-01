@@ -1,6 +1,7 @@
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import { CartDrawer } from '@/components/cart/CartDrawer'
+import { CartSync } from '@/components/cart/CartSync'
 
 export default function StorefrontLayout({
   children,
@@ -13,6 +14,7 @@ export default function StorefrontLayout({
       <main className="flex-1">{children}</main>
       <Footer />
       <CartDrawer />
+      <CartSync />
     </>
   )
 }

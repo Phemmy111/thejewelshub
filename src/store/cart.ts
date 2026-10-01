@@ -20,6 +20,7 @@ interface CartStore {
   updateQuantity: (id: string, quantity: number) => void
   setIsOpen: (isOpen: boolean) => void
   clearCart: () => void
+  setItems: (items: CartItem[]) => void
 }
 
 export const useCartStore = create<CartStore>()(
@@ -27,6 +28,7 @@ export const useCartStore = create<CartStore>()(
     (set, get) => ({
       items: [],
       isOpen: false,
+      setItems: (items) => set({ items }),
       addItem: (item) => {
         const currentItems = get().items
         // Match on productId + size + color so each variant is a separate line item
