@@ -35,19 +35,18 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const clerkKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
-
-  const content = (
+  // <html> must always be the direct return value in Next.js App Router.
+  // ClerkProvider wraps only the children (inside body), not the html element.
+  return (
     <html
       lang="en"
       className={`${playfair.variable} ${dmSans.variable} h-full`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground antialiased">
-        {children}
+        <ClerkProvider>
+          {children}
+        </ClerkProvider>
       </body>
     </html>
   )
-
-  return clerkKey ? <ClerkProvider>{content}</ClerkProvider> : content
 }
-
