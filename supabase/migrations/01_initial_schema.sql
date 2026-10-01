@@ -157,20 +157,20 @@ INSERT INTO public.admins (email, role) VALUES ('admin@thejewelshub.com', 'super
 
 -- Insert Categories
 INSERT INTO public.categories (id, name, slug, description) VALUES 
-('c1000000-0000-0000-0000-000000000000', 'Accessories', 'accessories', 'Premium accessories including watches and sunglasses.'),
-('c2000000-0000-0000-0000-000000000000', 'Jewels', 'jewels', 'Exquisite jewellery for every occasion.');
+('10000000-0000-0000-0000-000000000001', 'Accessories', 'accessories', 'Premium accessories including watches and sunglasses.'),
+('10000000-0000-0000-0000-000000000002', 'Jewels', 'jewels', 'Exquisite jewellery for every occasion.');
 
 -- Insert Sub-Categories
 INSERT INTO public.categories (id, name, slug, parent_id) VALUES 
-('c1100000-0000-0000-0000-000000000000', 'Watches', 'watches', 'c1000000-0000-0000-0000-000000000000'),
-('c1200000-0000-0000-0000-000000000000', 'Sunglasses', 'sunglasses', 'c1000000-0000-0000-0000-000000000000'),
-('c2100000-0000-0000-0000-000000000000', 'Rings', 'rings', 'c2000000-0000-0000-0000-000000000000'),
-('c2200000-0000-0000-0000-000000000000', 'Necklaces', 'necklaces', 'c2000000-0000-0000-0000-000000000000');
+('10000000-0000-0000-0000-000000000011', 'Watches', 'watches', '10000000-0000-0000-0000-000000000001'),
+('10000000-0000-0000-0000-000000000012', 'Sunglasses', 'sunglasses', '10000000-0000-0000-0000-000000000001'),
+('10000000-0000-0000-0000-000000000021', 'Rings', 'rings', '10000000-0000-0000-0000-000000000002'),
+('10000000-0000-0000-0000-000000000022', 'Necklaces', 'necklaces', '10000000-0000-0000-0000-000000000002');
 
 -- Insert Sample Products (Prices in Kobo, e.g., 2500000 = 25,000 NGN)
 INSERT INTO public.products (id, category_id, name, slug, description, price_kobo, stock_quantity, is_featured) VALUES 
-('p1000000-0000-0000-0000-000000000000', 'c1100000-0000-0000-0000-000000000000', 'Gold Classic Chronograph', 'gold-classic-chronograph', 'A timeless gold wristwatch for the elegant man.', 4500000, 10, true),
-('p2000000-0000-0000-0000-000000000000', 'c2100000-0000-0000-0000-000000000000', 'Diamond Promise Ring', 'diamond-promise-ring', 'Exquisite 18k gold plated ring with cubic zirconia.', 1500000, 20, true),
-('p3000000-0000-0000-0000-000000000000', 'c2200000-0000-0000-0000-000000000000', 'Pearl Drop Necklace', 'pearl-drop-necklace', 'Minimalist pearl necklace on a gold chain.', 1250000, 15, true);
+('20000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000011', 'Gold Classic Chronograph', 'gold-classic-chronograph', 'A timeless gold wristwatch for the elegant man.', 4500000, 10, true),
+('20000000-0000-0000-0000-000000000002', '10000000-0000-0000-0000-000000000021', 'Diamond Promise Ring', 'diamond-promise-ring', 'Exquisite 18k gold plated ring with cubic zirconia.', 1500000, 20, true),
+('20000000-0000-0000-0000-000000000003', '10000000-0000-0000-0000-000000000022', 'Pearl Drop Necklace', 'pearl-drop-necklace', 'Minimalist pearl necklace on a gold chain.', 1250000, 15, true);
 
 -- Note: In Phase 4, you will upload real images and products via the admin dashboard.
