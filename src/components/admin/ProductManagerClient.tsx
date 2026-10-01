@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Plus, X, Image as ImageIcon, Loader2, Edit, Trash2, Search, Package } from 'lucide-react'
-import { saveProduct, deleteProduct, getProductSignedUploadUrls } from '@/app/admin/products/actions'
+import { saveProduct, deleteProduct, getProductSignedUploadUrls, getReferenceMediaSignedUploadUrls } from '@/app/admin/products/actions'
 import { createClient } from '@/lib/supabase/client'
 import { formatPrice } from '@/lib/utils'
 
@@ -31,6 +31,14 @@ export default function ProductManagerClient({ initialProducts, categories }: { 
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])
   const [existingImages, setExistingImages] = useState<any[]>([])
 
+  // Sizes
+  const [sizes, setSizes] = useState<string[]>([])
+  const [sizeInput, setSizeInput] = useState('')
+
+  // Reference Media
+  const [refMediaFiles, setRefMediaFiles] = useState<File[]>([])
+  const [existingRefMedia, setExistingRefMedia] = useState<any[]>([])
+
   const filteredProducts = products.filter(p => p.name.toLowerCase().includes(search.toLowerCase()))
 
   const resetForm = () => {
@@ -45,6 +53,10 @@ export default function ProductManagerClient({ initialProducts, categories }: { 
     setIsActive(true)
     setSelectedFiles([])
     setExistingImages([])
+    setSizes([])
+    setSizeInput('')
+    setRefMediaFiles([])
+    setExistingRefMedia([])
   }
 
   const handleOpenNew = () => { resetForm(); setIsModalOpen(true) }
@@ -61,6 +73,10 @@ export default function ProductManagerClient({ initialProducts, categories }: { 
     setIsActive(prod.is_active)
     setExistingImages(prod.product_images || [])
     setSelectedFiles([])
+    setSizes(prod.sizes || [])
+    setSizeInput('')
+    setExistingRefMedia(prod.reference_media || [])
+    setRefMediaFiles([])
     setIsModalOpen(true)
   }
 
@@ -90,6 +106,26 @@ export default function ProductManagerClient({ initialProducts, categories }: { 
         }
       }
 
+      // Upload reference media
+      let newRefMedia: any[] = []
+      if (refMediaFiles.length > 0) {
+        const refFilesInfo = refMediaFiles.map(f => ({ name: f.name, type: f.type }))
+        const refUrlResult = await getReferenceMediaSignedUploadUrls(refFilesInfo)
+        if (!refUrlResult.success || !refUrlResult.urls) {
+          alert('Failed to upload reference media: ' + refUrlResult.error)
+          setIsSubmitting(false)
+          return
+        }
+        const supabase = createClient()
+        for (let i = 0; i < refMediaFiles.length; i++) {
+          const file = refMediaFiles[i]
+          const { path, token, publicUrl } = refUrlResult.urls[i]
+          const { error } = await supabase.storage.from('product-reference-media').uploadToSignedUrl(path, token, file)
+          if (error) throw new Error('Ref media upload failed: ' + error.message)
+          newRefMedia.push({ url: publicUrl, isVideo: file.type.startsWith('video/'), caption: '' })
+        }
+      }
+
       const productData = {
         id: editingId,
         name,
@@ -99,7 +135,12 @@ export default function ProductManagerClient({ initialProducts, categories }: { 
         price_kobo: Math.round(parseFloat(price) * 100),
         compare_at_price_kobo: comparePrice ? Math.round(parseFloat(comparePrice) * 100) : null,
         stock_quantity: parseInt(stock),
-        is_active: isActive
+        is_active: isActive,
+        sizes: sizes,
+        reference_media: [
+          ...existingRefMedia.map(m => ({ url: m.url, isVideo: m.isVideo, caption: m.caption || '' })),
+          ...newRefMedia
+        ]
       }
 
       const saveResult = await saveProduct(productData, finalImages)
@@ -259,8 +300,8 @@ export default function ProductManagerClient({ initialProducts, categories }: { 
 
       {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto" style={{ backgroundColor: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}>
-          <div className="bg-[#1A1A1A] border border-white/10 rounded-xl w-full max-w-3xl shadow-2xl my-auto">
+        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 overflow-y-auto" style={{ backgroundColor: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}>
+          <div className="bg-[#1A1A1A] border border-white/10 rounded-xl w-full max-w-4xl shadow-2xl my-8">
             <div className="flex items-center justify-between p-6 border-b border-white/10">
               <h2 className="text-xl font-bold text-white">{editingId ? 'Edit Product' : 'Add New Product'}</h2>
               <button onClick={() => setIsModalOpen(false)} className="text-white/50 hover:text-white p-1 rounded hover:bg-white/10 transition-colors">
@@ -309,6 +350,49 @@ export default function ProductManagerClient({ initialProducts, categories }: { 
                     <label className="block text-xs font-semibold text-white/60 uppercase tracking-wider mb-2">Stock Quantity</label>
                     <input required type="number" min="0" value={stock} onChange={e => setStock(e.target.value)} className={inputCls + ' font-mono'} />
                   </div>
+
+                  {/* Sizes */}
+                  <div>
+                    <label className="block text-xs font-semibold text-white/60 uppercase tracking-wider mb-2">Available Sizes</label>
+                    <div className="flex gap-2 flex-wrap mb-2">
+                      {sizes.map((size, i) => (
+                        <span key={i} className="flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold" style={{ backgroundColor: 'rgba(184,136,44,0.15)', color: '#B8882C', border: '1px solid rgba(184,136,44,0.3)' }}>
+                          {size}
+                          <button type="button" onClick={() => setSizes(prev => prev.filter((_, idx) => idx !== i))} style={{ lineHeight: 1 }}>×</button>
+                        </span>
+                      ))}
+                    </div>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={sizeInput}
+                        onChange={e => setSizeInput(e.target.value)}
+                        onKeyDown={e => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault()
+                            const val = sizeInput.trim().toUpperCase()
+                            if (val && !sizes.includes(val)) setSizes(prev => [...prev, val])
+                            setSizeInput('')
+                          }
+                        }}
+                        placeholder="e.g. S, M, L, XL or 6, 7, 8..."
+                        className="flex-1 bg-black/40 border border-white/10 rounded-md py-2 px-3 text-sm text-white focus:outline-none"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const val = sizeInput.trim().toUpperCase()
+                          if (val && !sizes.includes(val)) setSizes(prev => [...prev, val])
+                          setSizeInput('')
+                        }}
+                        className="px-3 py-2 rounded text-sm font-semibold text-white"
+                        style={{ backgroundColor: 'rgba(184,136,44,0.4)' }}
+                      >
+                        + Add
+                      </button>
+                    </div>
+                  </div>
+
                   <label className="flex items-center gap-3 cursor-pointer p-4 bg-black/20 rounded-md border border-white/5">
                     <input type="checkbox" checked={isActive} onChange={e => setIsActive(e.target.checked)} className="w-4 h-4" style={{ accentColor: '#B8882C' }} />
                     <div className="text-sm">
@@ -355,6 +439,53 @@ export default function ProductManagerClient({ initialProducts, categories }: { 
                     </label>
                   </div>
                 </div>
+              </div>
+
+              {/* Reference Media — full width row below the 2-col grid */}
+              <div className="mt-6 pt-6 border-t border-white/10">
+                <label className="block text-xs font-semibold text-white/60 uppercase tracking-wider mb-2">Reference Gallery (images &amp; videos for product detail page)</label>
+                <div className="flex gap-2 mb-3 flex-wrap">
+                  {existingRefMedia.map((m, i) => (
+                    <div key={i} className="relative w-16 h-16 rounded overflow-hidden border border-white/10 group">
+                      {m.isVideo
+                        ? <video src={m.url} className="w-full h-full object-cover" />
+                        : (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={m.url} alt="" className="w-full h-full object-cover" />
+                        )}
+                      <button type="button" onClick={() => setExistingRefMedia(prev => prev.filter((_, idx) => idx !== i))} className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity" style={{ backgroundColor: 'rgba(239,68,68,0.8)' }}>
+                        <Trash2 size={14} className="text-white" />
+                      </button>
+                    </div>
+                  ))}
+                  {refMediaFiles.map((f, i) => (
+                    <div key={'ref-' + i} className="relative w-16 h-16 rounded overflow-hidden border group" style={{ borderColor: '#B8882C', opacity: 0.8 }}>
+                      {f.type.startsWith('video/')
+                        ? <video src={URL.createObjectURL(f)} className="w-full h-full object-cover" />
+                        : (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={URL.createObjectURL(f)} alt="" className="w-full h-full object-cover" />
+                        )}
+                      <button type="button" onClick={() => setRefMediaFiles(prev => prev.filter((_, idx) => idx !== i))} className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity" style={{ backgroundColor: 'rgba(239,68,68,0.8)' }}>
+                        <Trash2 size={14} className="text-white" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                <label className="cursor-pointer rounded-lg p-5 flex flex-col items-center justify-center text-center transition-colors border-2 border-dashed border-white/10 hover:border-[#B8882C] bg-black/20">
+                  <ImageIcon className="text-white/30 mb-2" size={20} />
+                  <span className="text-sm font-medium text-white/70">Upload images or videos</span>
+                  <span className="text-xs text-white/40 mt-1">JPG, PNG, MP4, MOV accepted</span>
+                  <input
+                    type="file"
+                    accept="image/*,video/*"
+                    multiple
+                    className="hidden"
+                    onChange={e => {
+                      if (e.target.files) setRefMediaFiles(prev => [...prev, ...Array.from(e.target.files!)])
+                    }}
+                  />
+                </label>
               </div>
 
               <div className="mt-8 pt-6 border-t border-white/10 flex justify-end gap-3">

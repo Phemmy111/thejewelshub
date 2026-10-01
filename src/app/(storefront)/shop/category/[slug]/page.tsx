@@ -33,9 +33,9 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
       {sliderConfig && sliderConfig.media && sliderConfig.media.length > 0 && (
         <HeroSlider sliderConfig={sliderConfig} pageContext={{
           eyebrow: currentCategory?.name ? currentCategory.name + ' Collection' : 'Jewellery Collection',
-          lines: currentCategory ? [currentCategory.name + '.'] : ['Our', 'Collection.'],
-          highlight: 0,
-          sub: currentCategory?.description || 'Handpicked pieces crafted for the discerning woman.',
+          lines: currentCategory ? ['The', currentCategory.name, 'Edit.'] : ['Our', 'Curated', 'Collection.'],
+          highlight: 1,
+          sub: currentCategory?.description || 'Discover handpicked pieces crafted for the discerning woman. Uncompromising quality meets timeless design.',
           cta: { href: '/shop/category/' + slug, label: 'Shop ' + (currentCategory?.name || 'Collection') },
           accentX: '65%', accentY: '35%'
         }} />

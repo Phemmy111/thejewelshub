@@ -46,7 +46,8 @@ export async function getProductBySlug(slug: string) {
     .from('products')
     .select(`
       *,
-      categories(id, name, slug)
+      categories(id, name, slug),
+      product_images(id, url, is_primary, display_order)
     `)
     .eq('slug', slug)
     .eq('is_active', true)
@@ -57,6 +58,22 @@ export async function getProductBySlug(slug: string) {
     return null
   }
   return data
+}
+
+export async function getRelatedProducts(categorySlug: string, excludeSlug: string) {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('products')
+    .select(`
+      *,
+      categories!inner(id, name, slug),
+      product_images(url, is_primary)
+    `)
+    .eq('is_active', true)
+    .eq('categories.slug', categorySlug)
+    .neq('slug', excludeSlug)
+    .limit(4)
+  return data || []
 }
 
 export async function getSliderConfig(targetPage: string) {

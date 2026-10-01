@@ -76,6 +76,34 @@ export async function getProductSignedUploadUrls(filesInfo: { name: string, type
   }
 }
 
+export async function getReferenceMediaSignedUploadUrls(filesInfo: { name: string, type: string }[]) {
+  try {
+    const supabase = await createAdminClient()
+    const results = []
+
+    for (const file of filesInfo) {
+      const fileExt = file.name.split('.').pop()
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`
+
+      const { data, error } = await supabase.storage.from('product-reference-media').createSignedUploadUrl(fileName)
+
+      if (error) throw new Error(error.message)
+
+      const { data: { publicUrl } } = supabase.storage.from('product-reference-media').getPublicUrl(fileName)
+
+      results.push({
+        token: data.token,
+        path: data.path,
+        publicUrl
+      })
+    }
+
+    return { success: true, urls: results }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Unknown error' }
+  }
+}
+
 export async function saveProduct(productData: any, images: { url: string, is_primary: boolean }[]) {
   try {
     const supabase = await createAdminClient()
@@ -93,6 +121,8 @@ export async function saveProduct(productData: any, images: { url: string, is_pr
         compare_at_price_kobo: productData.compare_at_price_kobo || null,
         stock_quantity: productData.stock_quantity,
         is_active: productData.is_active,
+        sizes: productData.sizes || [],
+        reference_media: productData.reference_media || [],
         updated_at: new Date().toISOString()
       })
       .select()

@@ -152,7 +152,14 @@ export default function HeroSlider({ sliderConfig, pageContext }: { sliderConfig
             {/* Text Content */}
             <div className="relative z-10 w-full max-w-7xl mx-auto px-5 sm:px-8 flex items-center" style={{ paddingTop: '2rem' }}>
               <div style={{ maxWidth: '580px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.75rem' }}>
+                <div 
+                  style={{ 
+                    display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.75rem',
+                    opacity: i === active ? 1 : 0,
+                    transform: i === active ? 'translateY(0)' : 'translateY(20px)',
+                    transition: 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s'
+                  }}
+                >
                   <span style={{ display: 'block', width: '36px', height: '1px', backgroundColor: '#B8882C', flexShrink: 0 }} />
                   <span style={{ fontSize: '0.68rem', fontWeight: 600, letterSpacing: '0.28em', textTransform: 'uppercase', color: '#B8882C' }}>
                     {textSlide.eyebrow}
@@ -168,6 +175,9 @@ export default function HeroSlider({ sliderConfig, pageContext }: { sliderConfig
                         display: 'block',
                         color: li === textSlide.highlight ? '#B8882C' : '#FFFFFF',
                         fontStyle: li === textSlide.highlight ? 'italic' : 'normal',
+                        opacity: i === active ? 1 : 0,
+                        transform: i === active ? 'translateY(0)' : 'translateY(30px)',
+                        transition: `all 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${0.4 + (li * 0.1)}s`
                       }}
                     >
                       {line}
@@ -175,11 +185,25 @@ export default function HeroSlider({ sliderConfig, pageContext }: { sliderConfig
                   ))}
                 </h1>
 
-                <p style={{ marginTop: '1.5rem', color: 'rgba(255,255,255,0.58)', fontSize: '1rem', lineHeight: 1.75, maxWidth: '400px' }}>
+                <p 
+                  style={{ 
+                    marginTop: '1.5rem', color: 'rgba(255,255,255,0.58)', fontSize: '1rem', lineHeight: 1.75, maxWidth: '400px',
+                    opacity: i === active ? 1 : 0,
+                    transform: i === active ? 'translateY(0)' : 'translateY(20px)',
+                    transition: 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.7s'
+                  }}
+                >
                   {textSlide.sub}
                 </p>
 
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.875rem', marginTop: '2.25rem' }}>
+                <div 
+                  style={{ 
+                    display: 'flex', flexWrap: 'wrap', gap: '0.875rem', marginTop: '2.25rem',
+                    opacity: i === active ? 1 : 0,
+                    transform: i === active ? 'translateY(0)' : 'translateY(20px)',
+                    transition: 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.9s'
+                  }}
+                >
                   {textSlide.cta && (
                     <Link href={textSlide.cta.href} className="hero-btn-primary" style={{ display: 'inline-flex', alignItems: 'center', padding: '0.875rem 1.75rem', fontWeight: 700, fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase', transition: 'background-color 0.2s' }}>
                       {textSlide.cta.label}
