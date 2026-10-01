@@ -10,19 +10,20 @@ export default async function HomePage() {
     getAllSlidersConfig()
   ])
 
-  const getCatImg = (slug: string, fallback: string) => {
+  // Helper to extract the first media from a specific slider config
+  const getCatMedia = (slug: string, fallback: string) => {
     const customSlider = allSliders.find((s: any) => s.targetPage === `home-cat-${slug}`)
     if (customSlider && customSlider.media && customSlider.media.length > 0) {
-      return customSlider.media[0].url
+      return { url: customSlider.media[0].url, isVideo: customSlider.media[0].isVideo }
     }
-    return fallback
+    return { url: fallback, isVideo: false }
   }
 
   const categoryTiles = [
-    { label: 'Jewels', slug: 'jewels', sub: 'Rings · Necklaces · Sets', href: '/shop/category/jewels', img: getCatImg('jewels', 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=800&auto=format&fit=crop') },
-    { label: 'Earrings', slug: 'earrings', sub: 'Studs · Drops · Hoops', href: '/shop/category/earrings', img: getCatImg('earrings', 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=800&auto=format&fit=crop') },
-    { label: 'Accessories', slug: 'accessories', sub: 'Watches · Sunglasses', href: '/shop/category/accessories', img: getCatImg('accessories', 'https://images.unsplash.com/photo-1524592094714-cb9c5e40e698?q=80&w=800&auto=format&fit=crop') },
-    { label: 'Bracelets', slug: 'bracelets', sub: 'Bangles · Chains', href: '/shop/category/bracelets', img: getCatImg('bracelets', 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?q=80&w=800&auto=format&fit=crop') },
+    { label: 'Jewels', slug: 'jewels', sub: 'Rings · Necklaces · Sets', href: '/shop/category/jewels', ...getCatMedia('jewels', 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=800&auto=format&fit=crop') },
+    { label: 'Earrings', slug: 'earrings', sub: 'Studs · Drops · Hoops', href: '/shop/category/earrings', ...getCatMedia('earrings', 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=800&auto=format&fit=crop') },
+    { label: 'Accessories', slug: 'accessories', sub: 'Watches · Sunglasses', href: '/shop/category/accessories', ...getCatMedia('accessories', 'https://images.unsplash.com/photo-1524592094714-cb9c5e40e698?q=80&w=800&auto=format&fit=crop') },
+    { label: 'Bracelets', slug: 'bracelets', sub: 'Bangles · Chains', href: '/shop/category/bracelets', ...getCatMedia('bracelets', 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?q=80&w=800&auto=format&fit=crop') },
   ]
 
   return (
@@ -32,9 +33,9 @@ export default async function HomePage() {
         .cat-pill:hover { border-color: #0D0D0D; }
         .cat-tile { background: #E8E5DF; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; aspect-ratio: 3/4; padding: 1.5rem; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s; border: 1px solid rgba(184,136,44,0.1); border-radius: 4px; }
         .cat-tile:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -10px rgba(13,13,13,0.1); }
-        .cat-tile::after { content: ''; position: absolute; bottom: 0; left: 0; height: 3px; width: 0; background-color: #B8882C; transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .cat-tile::after { content: ''; position: absolute; bottom: 0; left: 0; height: 3px; width: 0; background-color: #B8882C; transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 2; }
         .cat-tile:hover::after { width: 100%; }
-        .cat-tile-overlay { position: absolute; inset: 0; opacity: 0; transition: opacity 0.4s; background: linear-gradient(to top, rgba(184,136,44,0.08), transparent); }
+        .cat-tile-overlay { position: absolute; inset: 0; opacity: 0; transition: opacity 0.4s; background: linear-gradient(to top, rgba(184,136,44,0.08), transparent); z-index: 1; }
         .cat-tile:hover .cat-tile-overlay { opacity: 1; }
         .shop-all-link { color: #B8882C; border-bottom: 1px solid #B8882C; transition: opacity 0.2s; }
         .shop-all-link:hover { opacity: 0.7; }
@@ -94,9 +95,12 @@ export default async function HomePage() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {categoryTiles.map((cat, i) => (
             <Reveal key={cat.label} delay={i * 0.1}>
-              <Link href={cat.href} className="cat-tile" style={{ backgroundImage: `url(${cat.img})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+              <Link href={cat.href} className="cat-tile" style={!cat.isVideo ? { backgroundImage: `url(${cat.url})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}>
+                {cat.isVideo && (
+                  <video src={cat.url} autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover" style={{ zIndex: 0 }} />
+                )}
                 <div className="cat-tile-overlay" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.7), transparent)' }} />
-                <div style={{ position: 'relative', zIndex: 1 }}>
+                <div style={{ position: 'relative', zIndex: 2 }}>
                   <h3 className="font-display font-bold" style={{ fontSize: 'clamp(1.1rem, 2vw, 1.4rem)', color: '#FFFFFF', lineHeight: 1.2 }}>{cat.label}</h3>
                   <p style={{ fontSize: '0.72rem', marginTop: '0.3rem', color: 'rgba(255,255,255,0.8)', fontWeight: 500 }}>{cat.sub}</p>
                 </div>
