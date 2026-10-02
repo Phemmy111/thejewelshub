@@ -8,11 +8,12 @@ import { notFound } from 'next/navigation'
 
 export const revalidate = 60
 
-export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function CategoryPage({ params, searchParams }: { params: Promise<{ slug: string }>, searchParams: Promise<{ q?: string }> }) {
   const { slug } = await params
+  const { q } = await searchParams
   
   const [products, categories, sliderConfig] = await Promise.all([
-    getProducts(slug),
+    getProducts(slug, q),
     getCategories(),
     getSliderConfig(`/shop/category/${slug}`)
   ])

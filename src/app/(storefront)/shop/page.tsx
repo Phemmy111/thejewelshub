@@ -7,9 +7,11 @@ import { ProductCardActions } from '@/components/product/ProductCardActions'
 
 export const revalidate = 60 // Revalidate every minute
 
-export default async function ShopPage() {
+export default async function ShopPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
+  const { q } = await searchParams
+  
   const [products, categories, sliderConfig] = await Promise.all([
-    getProducts(),
+    getProducts(undefined, q),
     getCategories(),
     getSliderConfig('/shop')
   ])

@@ -15,7 +15,7 @@ export async function getCategories() {
   return data
 }
 
-export async function getProducts(categorySlug?: string) {
+export async function getProducts(categorySlug?: string, searchTerm?: string) {
   const supabase = await createClient()
   
   let query = supabase
@@ -28,6 +28,7 @@ export async function getProducts(categorySlug?: string) {
     .eq('is_active', true)
     .order('created_at', { ascending: false })
 
+  if (searchTerm) { query = query.ilike('name', '%$%') }
   if (categorySlug) {
     query = query.eq('categories.slug', categorySlug)
   }
@@ -112,3 +113,5 @@ export async function getAllSlidersConfig() {
     return []
   }
 }
+
+

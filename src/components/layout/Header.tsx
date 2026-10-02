@@ -43,9 +43,14 @@ const navLinks = [
   { href: '/shop', label: 'New Arrivals' },
 ]
 
+import { useRouter } from 'next/navigation'
+
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+  const router = useRouter()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60)
@@ -104,9 +109,37 @@ export default function Header() {
 
         {/* Actions */}
         <div className="flex items-center gap-2">
-          <button aria-label="Search" className="p-2 rounded-full transition-colors hover:bg-black/5">
-            <Search size={19} style={{ color: scrolled ? '#0D0D0D' : '#FFFFFF' }} />
-          </button>
+          {searchOpen ? (
+            <form 
+              onSubmit={e => { 
+                e.preventDefault(); 
+                if (searchQuery.trim()) {
+                  router.push(`/shop?q=${encodeURIComponent(searchQuery.trim())}`);
+                }
+                setSearchOpen(false); 
+              }} 
+              className="flex items-center rounded-full px-3 py-1 transition-colors"
+              style={{ backgroundColor: scrolled ? 'rgba(0,0,0,0.05)' : 'rgba(255,255,255,0.15)' }}
+            >
+              <Search size={16} style={{ color: scrolled ? '#0D0D0D' : '#FFFFFF', marginRight: '8px' }} />
+              <input 
+                autoFocus 
+                type="text" 
+                value={searchQuery} 
+                onChange={e => setSearchQuery(e.target.value)} 
+                placeholder="Search..." 
+                className="bg-transparent border-none outline-none text-sm w-24 sm:w-32 md:w-48" 
+                style={{ color: scrolled ? '#0D0D0D' : '#FFFFFF' }}
+              />
+              <button type="button" onClick={() => setSearchOpen(false)} className="hover:opacity-70 transition-opacity">
+                <X size={16} style={{ color: scrolled ? '#0D0D0D' : '#FFFFFF' }}/>
+              </button>
+            </form>
+          ) : (
+            <button aria-label="Search" onClick={() => setSearchOpen(true)} className="p-2 rounded-full transition-colors hover:bg-black/5">
+              <Search size={19} style={{ color: scrolled ? '#0D0D0D' : '#FFFFFF' }} />
+            </button>
+          )}
           
           <span key="auth">
             <SignedIn>
