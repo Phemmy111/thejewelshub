@@ -100,7 +100,7 @@ export default async function AdminLayout({
             <span className="text-sm text-[var(--color-muted)] font-medium">Admin Dashboard</span>
           </div>
         </header>
-        <main className="flex-1 overflow-y-auto p-6">{children}</main>
+        <main className="flex-1 overflow-y-auto">{children}</main>
       </div>
     </div>
   )

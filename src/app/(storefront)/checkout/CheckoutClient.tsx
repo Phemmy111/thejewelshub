@@ -25,10 +25,45 @@ export default function CheckoutClient() {
   const [isProcessing, setIsProcessing] = useState(false)
   const [error, setError] = useState('')
 
+  // Discount code state
+  const [promoCode, setPromoCode] = useState('')
+  const [promoOpen, setPromoOpen] = useState(false)
+  const [promoLoading, setPromoLoading] = useState(false)
+  const [promoError, setPromoError] = useState('')
+  const [appliedDiscount, setAppliedDiscount] = useState<{
+    discountKobo: number
+    description: string
+    codeId: string
+  } | null>(null)
+
   useEffect(() => { setMounted(true) }, [])
 
   const subtotal = items.reduce((sum: number, i: CartItem) => sum + i.priceKobo * i.quantity, 0)
-  const total = subtotal // extend with delivery fee later if needed
+  const discountKobo = appliedDiscount?.discountKobo ?? 0
+  const total = Math.max(0, subtotal - discountKobo)
+
+  const handleApplyPromo = async () => {
+    if (!promoCode.trim()) return
+    setPromoLoading(true)
+    setPromoError('')
+    try {
+      const res = await fetch('/api/discount/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: promoCode, orderTotal: subtotal }),
+      })
+      const data = await res.json()
+      if (data.valid) {
+        setAppliedDiscount({ discountKobo: data.discountKobo, description: data.description, codeId: data.codeId })
+        setPromoOpen(false)
+      } else {
+        setPromoError(data.error || 'Invalid code')
+      }
+    } catch {
+      setPromoError('Could not validate code. Please try again.')
+    }
+    setPromoLoading(false)
+  }
 
   const inputCls = 'w-full border border-[#E8E5DF] rounded bg-white px-4 py-3 text-sm text-[#0D0D0D] focus:outline-none transition-colors'
 
@@ -254,14 +289,72 @@ export default function CheckoutClient() {
               </div>
 
               <div style={{ borderTop: '1px solid #E8E5DF', paddingTop: '16px' }}>
+                {/* Promo code */}
+                {appliedDiscount ? (
+                  <div style={{ marginBottom: '12px', padding: '10px 12px', backgroundColor: '#F0FDF4', border: '1px solid #BBF7D0', borderRadius: '4px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: '0.8rem', color: '#166534', fontWeight: 600 }}>
+                      🎉 {appliedDiscount.description} applied
+                    </span>
+                    <button
+                      onClick={() => { setAppliedDiscount(null); setPromoCode('') }}
+                      style={{ fontSize: '0.7rem', color: '#6B7280', background: 'none', border: 'none', cursor: 'pointer' }}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ) : (
+                  <div style={{ marginBottom: '14px' }}>
+                    {promoOpen ? (
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <input
+                          type="text"
+                          value={promoCode}
+                          onChange={e => setPromoCode(e.target.value.toUpperCase())}
+                          placeholder="PROMO CODE"
+                          style={{ flex: 1, border: '1px solid #E8E5DF', borderRadius: '4px', padding: '8px 12px', fontSize: '0.8rem', fontFamily: 'monospace', outline: 'none' }}
+                          onKeyDown={e => e.key === 'Enter' && handleApplyPromo()}
+                        />
+                        <button
+                          onClick={handleApplyPromo}
+                          disabled={promoLoading}
+                          style={{ padding: '8px 14px', backgroundColor: '#0D0D0D', color: '#fff', border: 'none', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 700, cursor: promoLoading ? 'not-allowed' : 'pointer', opacity: promoLoading ? 0.6 : 1 }}
+                        >
+                          {promoLoading ? '...' : 'Apply'}
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => setPromoOpen(true)}
+                        style={{ fontSize: '0.75rem', color: '#B8882C', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+                      >
+                        + Have a promo code?
+                      </button>
+                    )}
+                    {promoError && <p style={{ fontSize: '0.72rem', color: '#dc2626', marginTop: '4px' }}>{promoError}</p>}
+                  </div>
+                )}
+
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#7A7069' }}>Subtotal</span>
                   <span style={{ fontWeight: 700, fontSize: '1.1rem', color: '#0D0D0D' }}>{formatPrice(subtotal)}</span>
                 </div>
+                {discountKobo > 0 && (
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '6px' }}>
+                    <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#16a34a' }}>Discount</span>
+                    <span style={{ fontWeight: 700, fontSize: '1rem', color: '#16a34a' }}>- {formatPrice(discountKobo)}</span>
+                  </div>
+                )}
+                {discountKobo > 0 && (
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #E8E5DF' }}>
+                    <span style={{ fontSize: '0.85rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#0D0D0D' }}>Total</span>
+                    <span style={{ fontWeight: 800, fontSize: '1.2rem', color: '#0D0D0D' }}>{formatPrice(total)}</span>
+                  </div>
+                )}
                 <p style={{ fontSize: '0.7rem', color: '#7A7069', marginTop: '6px' }}>+ Delivery (confirmed after order)</p>
               </div>
             </div>
           </div>
+
         </div>
       </div>
     </div>

@@ -198,25 +198,26 @@ export default function ProductManagerClient({ initialProducts, categories }: { 
   const inputCls = 'w-full bg-black/40 border border-white/10 rounded-md py-2.5 px-3 text-sm text-white focus:outline-none focus:border-[#B8882C]'
 
   return (
-    <div>
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
-        <div>
-          <h1 className="text-3xl font-display font-bold text-[#0D0D0D] mb-2">Products &amp; Inventory</h1>
-          <p style={{ color: '#7A7069' }} className="text-sm">Manage your catalog, stock, and pricing.</p>
+    <div className="pb-24">
+      {/* Padded header area */}
+      <div className="px-4 md:px-6 py-6">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">
+          <div>
+            <h1 className="text-3xl font-display font-bold text-[#0D0D0D] mb-1">Products &amp; Inventory</h1>
+            <p style={{ color: '#7A7069' }} className="text-sm">Manage your catalog, stock, and pricing.</p>
+          </div>
+          <button
+            onClick={handleOpenNew}
+            style={{ backgroundColor: '#0D0D0D' }}
+            className="hover:bg-[#1A1A1A] w-full md:w-auto text-white px-5 py-2.5 rounded text-sm font-semibold flex items-center justify-center gap-2 transition-colors"
+          >
+            <Plus size={16} /> New Product
+          </button>
         </div>
-        <button
-          onClick={handleOpenNew}
-          style={{ backgroundColor: '#0D0D0D' }}
-          className="hover:bg-[#1A1A1A] w-full md:w-auto text-white px-5 py-2.5 rounded text-sm font-semibold flex items-center justify-center gap-2 transition-colors"
-        >
-          <Plus size={16} /> New Product
-        </button>
-      </div>
 
-      {/* Table */}
-      <div className="bg-white rounded-xl border border-[rgba(13,13,13,0.1)] overflow-hidden shadow-sm">
-        <div className="p-4 border-b border-[rgba(13,13,13,0.1)] flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between bg-white">
-          <div className="relative w-full sm:w-64">
+        {/* Search + count bar */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between">
+          <div className="relative w-full sm:w-72">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#A19D98]" size={16} />
             <input
               type="text"
@@ -229,9 +230,11 @@ export default function ProductManagerClient({ initialProducts, categories }: { 
           </div>
           <div className="text-[#7A7069] text-sm font-medium">{products.length} Products</div>
         </div>
+      </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-[#0D0D0D]">
+      {/* Full-width table — no side margins */}
+      <div className="border-t border-[rgba(13,13,13,0.1)] overflow-x-auto bg-white">
+        <table className="w-full text-left text-sm text-[#0D0D0D]">
             <thead className="text-xs uppercase bg-[#F9F8F6] text-[#7A7069] border-b border-[rgba(13,13,13,0.1)]">
               <tr>
                 <th className="px-6 py-4 font-semibold tracking-wider">Product</th>
@@ -307,8 +310,8 @@ export default function ProductManagerClient({ initialProducts, categories }: { 
               )}
             </tbody>
           </table>
-        </div>
       </div>
+    </div>
 
       {/* Modal */}
       {isModalOpen && (

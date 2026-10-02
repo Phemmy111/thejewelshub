@@ -5,6 +5,7 @@ import { cookies } from 'next/headers'
 import { formatPrice } from '@/lib/utils'
 import Link from 'next/link'
 import { Package } from 'lucide-react'
+import { ReviewForm } from '@/components/ReviewForm'
 
 export const revalidate = 0
 
@@ -82,29 +83,41 @@ export default async function CustomerOrdersPage() {
                 </div>
               </div>
 
-              {/* Order Items */}
+                {/* Order Items */}
               <div className="p-6">
                 <div className="space-y-4">
                   {(order.items as any[]).map((item, i) => (
-                    <div key={i} className="flex gap-4 items-center">
-                      <div className="w-16 h-16 bg-[#F5F4F0] rounded overflow-hidden flex-shrink-0 relative">
-                        {item.image ? (
-                          <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-[10px] text-[#A19D98]">No image</div>
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="text-sm font-bold text-[#0D0D0D] truncate">{item.name}</h4>
-                        <div className="text-xs text-[#7A7069] mt-1 space-x-2">
-                          <span>Qty: {item.quantity}</span>
-                          {item.size && <span>Size: {item.size}</span>}
-                          {item.color && <span>Color: {item.color}</span>}
+                    <div key={i} className="flex flex-col gap-2">
+                      <div className="flex gap-4 items-center">
+                        <div className="w-16 h-16 bg-[#F5F4F0] rounded overflow-hidden flex-shrink-0 relative">
+                          {item.image ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-[10px] text-[#A19D98]">No image</div>
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="text-sm font-bold text-[#0D0D0D] truncate">{item.name}</h4>
+                          <div className="text-xs text-[#7A7069] mt-1 space-x-2">
+                            <span>Qty: {item.quantity}</span>
+                            {item.size && <span>Size: {item.size}</span>}
+                            {item.color && <span>Color: {item.color}</span>}
+                          </div>
+                        </div>
+                        <div className="text-sm font-semibold text-[#0D0D0D]">
+                          {formatPrice(item.priceKobo * item.quantity)}
                         </div>
                       </div>
-                      <div className="text-sm font-semibold text-[#0D0D0D]">
-                        {formatPrice(item.priceKobo * item.quantity)}
-                      </div>
+                      {order.status === 'delivered' && item.productId && (
+                        <div className="pl-20">
+                          <ReviewForm
+                            productId={item.productId}
+                            productName={item.name}
+                            orderId={order.id}
+                          />
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
