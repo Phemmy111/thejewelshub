@@ -28,7 +28,7 @@ export async function getProducts(categorySlug?: string, searchTerm?: string) {
     .eq('is_active', true)
     .order('created_at', { ascending: false })
 
-  if (searchTerm) { query = query.ilike('name', '%$%') }
+  if (searchTerm) { query = query.ilike('name', '%' + searchTerm + '%') }
   if (categorySlug) {
     query = query.eq('categories.slug', categorySlug)
   }
@@ -113,5 +113,6 @@ export async function getAllSlidersConfig() {
     return []
   }
 }
+
 
 
