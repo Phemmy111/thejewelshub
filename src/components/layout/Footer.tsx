@@ -53,6 +53,16 @@ export default function Footer() {
               <span style={{ display: 'inline-block', width: '16px', height: '1px', backgroundColor: '#B8882C' }} />
               Chat on WhatsApp
             </a>
+
+            {/* Social Icons */}
+            <div className="flex items-center gap-4 mt-6">
+              <a href="https://www.instagram.com/thejewellershub_" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-[#B8882C] transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+              </a>
+              <a href="https://tiktok.com/@thejewellershub" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-[#B8882C] transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg>
+              </a>
+            </div>
           </div>
 
           {/* Link columns */}
