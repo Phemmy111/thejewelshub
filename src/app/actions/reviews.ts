@@ -67,3 +67,31 @@ export async function getProductReviews(productId: string) {
     .order('created_at', { ascending: false })
   return data || []
 }
+
+export async function approveReviewAdmin(reviewId: string, productId: string) {
+  const supabase = await createAdminClient()
+  const { error } = await supabase
+    .from('reviews')
+    .update({ is_approved: true })
+    .eq('id', reviewId)
+  
+  if (error) return { success: false, error: error.message }
+  
+  revalidatePath(`/shop/${productId}`)
+  revalidatePath('/admin/reviews')
+  return { success: true }
+}
+
+export async function deleteReviewAdmin(reviewId: string, productId: string) {
+  const supabase = await createAdminClient()
+  const { error } = await supabase
+    .from('reviews')
+    .delete()
+    .eq('id', reviewId)
+  
+  if (error) return { success: false, error: error.message }
+  
+  revalidatePath(`/shop/${productId}`)
+  revalidatePath('/admin/reviews')
+  return { success: true }
+}

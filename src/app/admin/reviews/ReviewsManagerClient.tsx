@@ -1,21 +1,33 @@
 'use client'
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
 import { Star, Check, Trash2 } from 'lucide-react'
-import { createClient } from '@/lib/supabase/client'
+import { approveReviewAdmin, deleteReviewAdmin } from '@/app/actions/reviews'
 
 export default function ReviewsManagerClient({ initialReviews }: { initialReviews: any[] }) {
   const [reviews, setReviews] = useState(initialReviews)
-  const supabase = createClient()
+  const [isPending, startTransition] = useTransition()
 
-  const approveReview = async (id: string) => {
-    await supabase.from('reviews').update({ is_approved: true }).eq('id', id)
-    setReviews(prev => prev.map(r => (r.id === id ? { ...r, is_approved: true } : r)))
+  const approveReview = async (id: string, productId: string) => {
+    startTransition(async () => {
+      const res = await approveReviewAdmin(id, productId)
+      if (res.success) {
+        setReviews(prev => prev.map(r => (r.id === id ? { ...r, is_approved: true } : r)))
+      } else {
+        alert('Failed to approve review')
+      }
+    })
   }
 
-  const deleteReview = async (id: string) => {
+  const deleteReview = async (id: string, productId: string) => {
     if (!confirm('Delete this review?')) return
-    await supabase.from('reviews').delete().eq('id', id)
-    setReviews(prev => prev.filter(r => r.id !== id))
+    startTransition(async () => {
+      const res = await deleteReviewAdmin(id, productId)
+      if (res.success) {
+        setReviews(prev => prev.filter(r => r.id !== id))
+      } else {
+        alert('Failed to delete review')
+      }
+    })
   }
 
   const renderStars = (n: number) =>
@@ -81,16 +93,18 @@ export default function ReviewsManagerClient({ initialReviews }: { initialReview
                 <td className="px-2 py-3 md:px-6 md:py-4 text-right">
                   {!r.is_approved && (
                     <button
-                      onClick={() => approveReview(r.id)}
-                      className="p-1.5 rounded hover:bg-green-50 text-green-600 mr-2"
+                      onClick={() => approveReview(r.id, r.product_id)}
+                      disabled={isPending}
+                      className="p-1.5 rounded hover:bg-green-50 text-green-600 mr-2 disabled:opacity-50"
                       title="Approve"
                     >
                       <Check size={16} />
                     </button>
                   )}
                   <button
-                    onClick={() => deleteReview(r.id)}
-                    className="p-1.5 rounded hover:bg-red-50 text-red-500"
+                    onClick={() => deleteReview(r.id, r.product_id)}
+                    disabled={isPending}
+                    className="p-1.5 rounded hover:bg-red-50 text-red-500 disabled:opacity-50"
                     title="Delete"
                   >
                     <Trash2 size={16} />
