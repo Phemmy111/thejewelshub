@@ -48,40 +48,40 @@ export default async function AdminCustomersPage() {
 
       {/* Full-width table */}
       <div className="overflow-x-auto border-t border-gray-200">
-        <table className="min-w-full divide-y divide-gray-200">
+        <table className="min-w-full divide-y divide-gray-200 text-xs md:text-xs md:text-sm">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Orders</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Spent</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Order</th>
+              <th className="px-2 py-3 md:px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+              <th className="hidden sm:table-cell px-2 py-3 md:px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
+              <th className="px-2 py-3 md:px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Orders</th>
+              <th className="px-2 py-3 md:px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Spent</th>
+              <th className="hidden sm:table-cell px-2 py-3 md:px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Order</th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-white divide-y divide-gray-200 text-xs md:text-xs md:text-sm">
             {customers.map((cust: any) => (
               <tr key={cust.email} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-bold text-gray-900">{cust.name}</div>
+                <td className="px-2 py-3 md:px-6 md:py-4 whitespace-nowrap">
+                  <div className="text-xs md:text-sm font-bold text-gray-900">{cust.name}</div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-900">{cust.email}</div>
-                  <div className="text-sm text-gray-500">{cust.phone || 'No phone'}</div>
+                <td className="hidden sm:table-cell px-2 py-3 md:px-6 md:py-4 whitespace-nowrap">
+                  <div className="text-xs md:text-sm text-gray-900">{cust.email}</div>
+                  <div className="text-xs md:text-sm text-gray-500">{cust.phone || 'No phone'}</div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td className="px-2 py-3 md:px-6 md:py-4 whitespace-nowrap text-xs md:text-sm text-gray-500">
                   {cust.orderCount}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-[#B8882C]">
+                <td className="px-2 py-3 md:px-6 md:py-4 whitespace-nowrap text-xs md:text-sm font-bold text-[#B8882C]">
                   {formatPrice(cust.totalSpent)}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td className="hidden sm:table-cell px-2 py-3 md:px-6 md:py-4 whitespace-nowrap text-xs md:text-sm text-gray-500">
                   {new Date(cust.lastOrderDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                 </td>
               </tr>
             ))}
             {customers.length === 0 && (
               <tr>
-                <td colSpan={5} className="px-6 py-12 text-center text-gray-500 text-sm">
+                <td colSpan={5} className="px-6 py-12 text-center text-gray-500 text-xs md:text-sm">
                   No customers found yet.
                 </td>
               </tr>

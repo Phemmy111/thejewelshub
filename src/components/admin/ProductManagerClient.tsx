@@ -224,7 +224,7 @@ export default function ProductManagerClient({ initialProducts, categories }: { 
               placeholder="Search products..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-[#F5F4F0] border border-[rgba(13,13,13,0.1)] rounded-md py-2 pl-9 pr-3 text-sm text-[#0D0D0D] focus:outline-none focus:bg-white"
+              className="w-full bg-[#F5F4F0] border border-[rgba(13,13,13,0.1)] rounded-md py-2 pl-9 pr-3 text-xs md:text-sm text-[#0D0D0D] focus:outline-none focus:bg-white"
               style={{ outlineColor: '#B8882C' }}
             />
           </div>
@@ -234,15 +234,15 @@ export default function ProductManagerClient({ initialProducts, categories }: { 
 
       {/* Full-width table — no side margins */}
       <div className="border-t border-[rgba(13,13,13,0.1)] overflow-x-auto bg-white">
-        <table className="w-full text-left text-sm text-[#0D0D0D]">
+        <table className="w-full text-left text-xs md:text-sm text-[#0D0D0D]">
             <thead className="text-xs uppercase bg-[#F9F8F6] text-[#7A7069] border-b border-[rgba(13,13,13,0.1)]">
               <tr>
-                <th className="px-6 py-4 font-semibold tracking-wider">Product</th>
-                <th className="px-6 py-4 font-semibold tracking-wider">Category</th>
-                <th className="px-6 py-4 font-semibold tracking-wider">Price</th>
-                <th className="px-6 py-4 font-semibold tracking-wider">Stock</th>
-                <th className="px-6 py-4 font-semibold tracking-wider">Status</th>
-                <th className="px-6 py-4 font-semibold tracking-wider text-right">Actions</th>
+                <th className="px-2 py-3 md:px-6 md:py-4 font-semibold tracking-wider">Product</th>
+                <th className="hidden sm:table-cell px-2 py-3 md:px-6 md:py-4 font-semibold tracking-wider">Category</th>
+                <th className="px-2 py-3 md:px-6 md:py-4 font-semibold tracking-wider">Price</th>
+                <th className="hidden sm:table-cell px-2 py-3 md:px-6 md:py-4 font-semibold tracking-wider">Stock</th>
+                <th className="px-2 py-3 md:px-6 md:py-4 font-semibold tracking-wider">Status</th>
+                <th className="px-2 py-3 md:px-6 md:py-4 font-semibold tracking-wider text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[rgba(13,13,13,0.08)] bg-white">
@@ -250,7 +250,7 @@ export default function ProductManagerClient({ initialProducts, categories }: { 
                 const primaryImage = product.product_images?.find((img: any) => img.is_primary) || product.product_images?.[0]
                 return (
                   <tr key={product.id} className="hover:bg-[#F9F8F6] transition-colors">
-                    <td className="px-6 py-4">
+                    <td className="px-2 py-3 md:px-6 md:py-4">
                       <div className="flex items-center gap-4">
                         <div className="w-10 h-10 rounded border border-[rgba(13,13,13,0.1)] flex items-center justify-center overflow-hidden flex-shrink-0 bg-[#E8E5DF]">
                           {primaryImage ? (
@@ -266,15 +266,15 @@ export default function ProductManagerClient({ initialProducts, categories }: { 
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="hidden sm:table-cell px-2 py-3 md:px-6 md:py-4">
                       <span className="bg-[#E8E5DF] text-[#0D0D0D] px-2.5 py-1 rounded-full text-xs font-semibold">
                         {product.categories?.name || 'Uncategorized'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 font-mono font-bold" style={{ color: '#0D0D0D' }}>
+                    <td className="px-2 py-3 md:px-6 md:py-4 font-mono font-bold" style={{ color: '#0D0D0D' }}>
                       {formatPrice(product.price_kobo)}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="hidden sm:table-cell px-2 py-3 md:px-6 md:py-4">
                       <div className="flex items-center gap-2 font-medium">
                         <div
                           className="w-2 h-2 rounded-full"
@@ -283,14 +283,14 @@ export default function ProductManagerClient({ initialProducts, categories }: { 
                         {product.stock_quantity}
                       </div>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-2 py-3 md:px-6 md:py-4">
                       {product.is_active ? (
                         <span className="text-xs font-bold" style={{ color: '#059669' }}>Active</span>
                       ) : (
                         <span className="text-xs font-bold" style={{ color: '#dc2626' }}>Draft</span>
                       )}
                     </td>
-                    <td className="px-6 py-4 text-right">
+                    <td className="px-2 py-3 md:px-6 md:py-4 text-right">
                       <button onClick={() => handleOpenEdit(product)} className="p-2 hover:bg-[#E8E5DF] rounded text-[#7A7069] hover:text-[#0D0D0D] transition-colors mr-2">
                         <Edit size={16} />
                       </button>

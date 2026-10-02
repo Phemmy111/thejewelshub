@@ -30,44 +30,44 @@ export default function ReviewsManagerClient({ initialReviews }: { initialReview
   return (
     <div className="bg-white rounded-lg shadow overflow-hidden border border-gray-100">
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
+        <table className="min-w-full divide-y divide-gray-200 text-xs md:text-sm">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-2 py-3 md:px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Customer
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-2 py-3 md:px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Product
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-2 py-3 md:px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Rating
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-2 py-3 md:px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Comment
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-2 py-3 md:px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Status
               </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-2 py-3 md:px-6 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-white divide-y divide-gray-200 text-xs md:text-sm">
             {reviews.map(r => (
               <tr key={r.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4">
+                <td className="px-2 py-3 md:px-6 md:py-4">
                   <div className="text-sm font-medium text-gray-900">{r.customer_name}</div>
                   <div className="text-xs text-gray-500">{r.customer_email}</div>
                 </td>
-                <td className="px-6 py-4 text-sm text-gray-700">{r.products?.name}</td>
-                <td className="px-6 py-4">
+                <td className="hidden sm:table-cell px-2 py-3 md:px-6 md:py-4 text-sm text-gray-700">{r.products?.name}</td>
+                <td className="px-2 py-3 md:px-6 md:py-4">
                   <div className="flex gap-0.5">{renderStars(r.rating)}</div>
                 </td>
-                <td className="px-6 py-4 text-sm text-gray-600 max-w-xs truncate">
+                <td className="hidden sm:table-cell px-2 py-3 md:px-6 md:py-4 text-sm text-gray-600 max-w-xs truncate">
                   {r.comment || '—'}
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-2 py-3 md:px-6 md:py-4">
                   <span
                     className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
                       r.is_approved
@@ -78,7 +78,7 @@ export default function ReviewsManagerClient({ initialReviews }: { initialReview
                     {r.is_approved ? 'Approved' : 'Pending'}
                   </span>
                 </td>
-                <td className="px-6 py-4 text-right">
+                <td className="px-2 py-3 md:px-6 md:py-4 text-right">
                   {!r.is_approved && (
                     <button
                       onClick={() => approveReview(r.id)}

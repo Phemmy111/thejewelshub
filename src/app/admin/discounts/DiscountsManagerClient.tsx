@@ -155,50 +155,50 @@ export default function DiscountsManagerClient({ initialCodes }: { initialCodes:
       {/* Table */}
       <div className="bg-white rounded-lg shadow overflow-hidden border border-gray-100">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
+          <table className="min-w-full divide-y divide-gray-200 text-xs md:text-sm">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-2 py-3 md:px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Code
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-2 py-3 md:px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Discount
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-2 py-3 md:px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Min Order
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-2 py-3 md:px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Uses
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-2 py-3 md:px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Status
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-2 py-3 md:px-6 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-white divide-y divide-gray-200 text-xs md:text-sm">
               {codes.map(c => (
                 <tr key={c.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4">
+                  <td className="px-2 py-3 md:px-6 md:py-4">
                     <span className="font-mono font-bold text-sm bg-gray-100 px-2 py-1 rounded text-gray-800">
                       {c.code}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-sm font-semibold text-[#B8882C]">
+                  <td className="px-2 py-3 md:px-6 md:py-4 text-sm font-semibold text-[#B8882C]">
                     {c.type === 'percentage'
                       ? `${c.value}% OFF`
                       : `${formatPrice(c.value * 100)} OFF`}
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-600">
+                  <td className="hidden sm:table-cell px-2 py-3 md:px-6 md:py-4 text-sm text-gray-600">
                     {c.min_order_kobo > 0 ? formatPrice(c.min_order_kobo) : 'None'}
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-600">
+                  <td className="hidden sm:table-cell px-2 py-3 md:px-6 md:py-4 text-sm text-gray-600">
                     {c.uses_count}
                     {c.max_uses ? ` / ${c.max_uses}` : ''}
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-2 py-3 md:px-6 md:py-4">
                     <button
                       onClick={() => toggleActive(c.id, c.is_active)}
                       className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
@@ -208,7 +208,7 @@ export default function DiscountsManagerClient({ initialCodes }: { initialCodes:
                       {c.is_active ? 'Active' : 'Disabled'}
                     </button>
                   </td>
-                  <td className="px-6 py-4 text-right">
+                  <td className="px-2 py-3 md:px-6 md:py-4 text-right">
                     <button
                       onClick={() => deleteCode(c.id)}
                       className="p-1.5 rounded hover:bg-red-50 text-red-500"
