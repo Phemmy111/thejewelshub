@@ -46,7 +46,7 @@ export default async function AdminCustomersPage() {
   const customers = Array.from(customersMap.values()).sort((a, b) => b.totalSpent - a.totalSpent)
 
   return (
-    <div className="p-8 max-w-7xl mx-auto">
+    <div className="p-4 md:p-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Customers</h1>
         <p className="text-gray-600">Real-time database of your buyers based on order history.</p>

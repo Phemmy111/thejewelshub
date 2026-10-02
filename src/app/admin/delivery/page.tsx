@@ -7,7 +7,7 @@ export default async function AdminDeliveryPage() {
   if (!userId) redirect('/sign-in')
 
   return (
-    <div className="p-8 max-w-7xl mx-auto h-[70vh] flex flex-col items-center justify-center text-center">
+    <div className="p-4 md:p-8 h-[70vh] flex flex-col items-center justify-center text-center">
       <div className="bg-black/5 p-6 rounded-full mb-6">
         <Truck size={48} className="text-[#B8882C]" />
       </div>

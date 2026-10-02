@@ -10,7 +10,7 @@ export default async function AdminProductsPage() {
   ])
 
   return (
-    <div className="p-8 pb-24">
+    <div className="p-4 md:p-8 pb-24">
       <ProductManagerClient initialProducts={products} categories={categories} />
     </div>
   )

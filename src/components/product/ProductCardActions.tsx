@@ -1,66 +1,81 @@
 'use client'
-
-import { ShoppingCart, Heart } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Heart, ShoppingCart } from 'lucide-react'
 import { useCartStore } from '@/store/cart'
-import { useWishlistStore } from '@/store/wishlist'
+import { toggleWishlist } from '@/app/actions/wishlist'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
 
-export function ProductCardActions({ product }: { product: any }) {
+interface ProductCardActionsProps {
+  product: {
+    id: string
+    name: string
+    slug: string
+    price_kobo: number
+    product_images?: { url: string; is_primary?: boolean }[]
+    sizes?: string[]
+    colors?: string[]
+  }
+}
+
+export function ProductCardActions({ product }: ProductCardActionsProps) {
   const { addItem, setIsOpen } = useCartStore()
-  const { toggleItem, hasItem } = useWishlistStore()
+  const [wishlisted, setWishlisted] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
-  
-  // To prevent hydration mismatch with local storage, we wait until mounted to check status
-  const [mounted, setMounted] = useState(false)
-  useEffect(() => setMounted(true), [])
-  
-  const isLoved = mounted ? hasItem(product.id) : false
-  const hasVariants = product.sizes?.length > 0 || product.colors?.length > 0
+
+  useEffect(() => {
+    fetch(`/api/wishlist/check?productId=${product.id}`)
+      .then(r => r.json())
+      .then(d => setWishlisted(d.wishlisted))
+      .catch(() => {})
+  }, [product.id])
+
+  const handleWishlist = async (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (isLoading) return
+    setIsLoading(true)
+    setWishlisted(prev => !prev) // optimistic
+    const result = await toggleWishlist(product.id)
+    if (!result.success) {
+      setWishlisted(prev => !prev) // revert on error
+      router.push('/sign-in')
+    }
+    setIsLoading(false)
+  }
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
-    
-    // If it has variants like sizes, send them to the product page to choose
+
+    const hasVariants = (product.sizes?.length ?? 0) > 0 || (product.colors?.length ?? 0) > 0
     if (hasVariants) {
-       router.push(`/shop/${product.slug}`)
-       return
+      router.push(`/shop/${product.slug}`)
+      return
     }
 
-    // Otherwise, fast-add to cart
+    const primaryImage =
+      product.product_images?.find(i => i.is_primary) || product.product_images?.[0]
     addItem({
       productId: product.id,
       name: product.name,
       priceKobo: product.price_kobo,
       quantity: 1,
-      image: product.product_images?.find((img: any) => img.is_primary)?.url || product.product_images?.[0]?.url,
+      image: primaryImage?.url || '',
     })
     setIsOpen(true)
   }
 
-  const handleWishlist = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    toggleItem({
-      productId: product.id,
-      name: product.name,
-      priceKobo: product.price_kobo,
-      slug: product.slug,
-      image: product.product_images?.find((img: any) => img.is_primary)?.url || product.product_images?.[0]?.url,
-    })
-  }
-
   return (
-    <div className="absolute top-3 right-3 flex flex-col gap-2 z-10 opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-      <button 
+    <div className="absolute top-3 right-3 flex flex-col gap-2 z-10 opacity-100 transition-opacity duration-300">
+      <button
         onClick={handleWishlist}
-        title={isLoved ? "Remove from Saved" : "Save for later"}
-        className={`w-9 h-9 rounded-full bg-white/90 hover:bg-white flex items-center justify-center shadow-sm transition-all hover:scale-105 ${isLoved ? 'text-red-500' : 'text-[#0D0D0D]'}`}
+        title={wishlisted ? 'Remove from Saved' : 'Save for later'}
+        className={`w-9 h-9 rounded-full bg-white/90 hover:bg-white flex items-center justify-center shadow-sm transition-all hover:scale-105 ${wishlisted ? 'text-red-500' : 'text-[#0D0D0D]'}`}
       >
-        <Heart size={18} fill={isLoved ? 'currentColor' : 'none'} />
+        <Heart size={18} fill={wishlisted ? 'currentColor' : 'none'} />
       </button>
-      <button 
+      <button
         onClick={handleAddToCart}
         title="Add to Cart"
         className="w-9 h-9 rounded-full bg-[#B8882C]/90 hover:bg-[#B8882C] flex items-center justify-center text-white shadow-sm transition-all hover:scale-105"

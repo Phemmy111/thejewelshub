@@ -198,7 +198,7 @@ export default function ProductManagerClient({ initialProducts, categories }: { 
   const inputCls = 'w-full bg-black/40 border border-white/10 rounded-md py-2.5 px-3 text-sm text-white focus:outline-none focus:border-[#B8882C]'
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div>
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-display font-bold text-[#0D0D0D] mb-2">Products &amp; Inventory</h1>
