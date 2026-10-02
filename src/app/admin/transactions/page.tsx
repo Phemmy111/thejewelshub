@@ -25,8 +25,8 @@ export default async function AdminTransactionsPage() {
   return (
     <div className="p-8 max-w-7xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">Transactions</h1>
-        <p className="text-white/60">Real-time view of all financial transactions and payment references.</p>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Transactions</h1>
+        <p className="text-gray-600">Real-time view of all financial transactions and payment references.</p>
       </div>
 
       <div className="bg-white rounded-lg shadow overflow-hidden border border-gray-100">

@@ -48,8 +48,8 @@ export default async function AdminCustomersPage() {
   return (
     <div className="p-8 max-w-7xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">Customers</h1>
-        <p className="text-white/60">Real-time database of your buyers based on order history.</p>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Customers</h1>
+        <p className="text-gray-600">Real-time database of your buyers based on order history.</p>
       </div>
 
       <div className="bg-white rounded-lg shadow overflow-hidden border border-gray-100">
