@@ -6,7 +6,7 @@ import HeroSlider from '@/components/hero/HeroSlider'
 import { ProductCardActions } from '@/components/product/ProductCardActions'
 import { notFound } from 'next/navigation'
 
-export const revalidate = 60
+export const dynamic = 'force-dynamic'
 
 export default async function CategoryPage({ params, searchParams }: { params: Promise<{ slug: string }>, searchParams: Promise<{ q?: string }> }) {
   const { slug } = await params
