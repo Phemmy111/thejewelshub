@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 
+import AdminMobileNav from '@/components/admin/AdminMobileNav'
+
 const SUPER_ADMINS = ['thejewellershub@gmail.com', 'femiadeleke2020@gmail.com']
 
 export default async function AdminLayout({
@@ -18,7 +20,7 @@ export default async function AdminLayout({
   }
 
   const user = await currentUser()
-  const email = user?.emailAddresses?.[0]?.emailAddress?.toLowerCase()
+  const email = user?.emailAddresses?.[0]?.emailAddress?.toLowerCase() || ''
 
   if (!email) redirect('/')
 
@@ -93,7 +95,10 @@ export default async function AdminLayout({
       {/* Main content */}
       <div className="flex-1 flex flex-col h-full overflow-hidden">
         <header className="bg-white border-b border-[var(--color-border)] px-6 py-4 flex items-center justify-between shrink-0">
-          <span className="text-sm text-[var(--color-muted)] font-medium">Admin Dashboard</span>
+          <div className="flex items-center gap-4">
+            <AdminMobileNav email={email} />
+            <span className="text-sm text-[var(--color-muted)] font-medium">Admin Dashboard</span>
+          </div>
         </header>
         <main className="flex-1 overflow-y-auto p-6">{children}</main>
       </div>
