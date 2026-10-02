@@ -12,7 +12,7 @@ export default async function AdminTransactionsPage() {
   const supabase = await createAdminClient()
   const { data: orders, error } = await supabase
     .from('orders')
-    .select('id, reference, customer_email, customer_name, total_amount_kobo, status, paid_at, created_at')
+    .select('id, paystack_reference, customer_email, customer_name, total_kobo, status, paid_at, created_at')
     .order('created_at', { ascending: false })
 
   if (error) console.error('Error fetching transactions:', error)
@@ -46,14 +46,14 @@ export default async function AdminTransactionsPage() {
                   {new Date(tx.created_at).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                 </td>
                 <td className="hidden sm:table-cell px-2 py-3 md:px-6 md:py-4 whitespace-nowrap text-xs md:text-sm font-mono text-gray-600">
-                  {tx.reference}
+                  {tx.paystack_reference}
                 </td>
                 <td className="px-2 py-3 md:px-6 md:py-4 whitespace-nowrap">
                   <div className="text-xs md:text-sm font-medium text-gray-900">{tx.customer_name}</div>
                   <div className="text-xs md:text-sm text-gray-500">{tx.customer_email}</div>
                 </td>
                 <td className="px-2 py-3 md:px-6 md:py-4 whitespace-nowrap text-xs md:text-sm font-bold text-gray-900">
-                  {formatPrice(tx.total_amount_kobo)}
+                  {formatPrice(tx.total_kobo)}
                 </td>
                 <td className="px-2 py-3 md:px-6 md:py-4 whitespace-nowrap">
                   <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
@@ -79,3 +79,4 @@ export default async function AdminTransactionsPage() {
     </div>
   )
 }
+

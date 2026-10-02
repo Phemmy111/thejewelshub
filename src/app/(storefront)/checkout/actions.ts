@@ -92,6 +92,30 @@ export async function verifyAndSaveOrder(payload: CheckoutPayload): Promise<{
 
     if (dbError) throw new Error('DB error: ' + dbError.message)
 
+    // 2.5 Decrement stock for each item
+    try {
+      for (const item of payload.items) {
+        if (!item.productId) continue
+        
+        // Fetch current stock
+        const { data: prod } = await supabase
+          .from('products')
+          .select('stock_quantity')
+          .eq('id', item.productId)
+          .single()
+          
+        if (prod && typeof prod.stock_quantity === 'number') {
+          const newStock = Math.max(0, prod.stock_quantity - item.quantity)
+          await supabase
+            .from('products')
+            .update({ stock_quantity: newStock })
+            .eq('id', item.productId)
+        }
+      }
+    } catch (stockErr) {
+      console.error('Failed to decrement stock:', stockErr)
+    }
+
     // 3. Send emails (non-blocking — don't fail order if email fails)
     await sendOrderEmails(payload, order.id).catch(err =>
       console.error('Email send failed (non-fatal):', err),

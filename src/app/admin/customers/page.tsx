@@ -12,7 +12,7 @@ export default async function AdminCustomersPage() {
   const supabase = await createAdminClient()
   const { data: orders, error } = await supabase
     .from('orders')
-    .select('customer_email, customer_name, customer_phone, total_amount_kobo, created_at')
+    .select('customer_email, customer_name, customer_phone, total_kobo, created_at')
     .order('created_at', { ascending: false })
 
   if (error) console.error('Error fetching orders for customers:', error)
@@ -32,7 +32,7 @@ export default async function AdminCustomersPage() {
       })
     }
     const customer = customersMap.get(email)
-    customer.totalSpent += order.total_amount_kobo
+    customer.totalSpent += order.total_kobo
     customer.orderCount += 1
   })
 
@@ -92,3 +92,4 @@ export default async function AdminCustomersPage() {
     </div>
   )
 }
+
