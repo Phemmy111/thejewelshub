@@ -311,7 +311,6 @@ export default function ProductManagerClient({ initialProducts, categories }: { 
             </tbody>
           </table>
       </div>
-    </div>
 
       {/* Modal */}
       {isModalOpen && (

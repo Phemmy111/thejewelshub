@@ -1,4 +1,3 @@
--- Wishlist table (logged-in users)
 CREATE TABLE IF NOT EXISTS wishlists (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id TEXT NOT NULL,
@@ -7,7 +6,6 @@ CREATE TABLE IF NOT EXISTS wishlists (
   UNIQUE(user_id, product_id)
 );
 
--- Reviews table
 CREATE TABLE IF NOT EXISTS reviews (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   product_id UUID REFERENCES products(id) ON DELETE CASCADE,
@@ -21,7 +19,6 @@ CREATE TABLE IF NOT EXISTS reviews (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Discount codes table
 CREATE TABLE IF NOT EXISTS discount_codes (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   code TEXT NOT NULL UNIQUE,
